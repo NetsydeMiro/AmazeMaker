@@ -1,0 +1,37 @@
+{
+  "name": "AmazeMaker",
+  "version": "0.7.0",
+  "description": "A rectilinear maze builder & solver.",
+  "main": "index.js",
+  "dependencies": {
+    "grunt": "^0.4.5",
+    "grunt-contrib-jasmine": "^0.8.1"
+  },
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-contrib-coffee": "^0.12.0",
+    "grunt-contrib-jasmine": "^0.8.1",
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt-template-jasmine-requirejs": "^0.2.0"
+  },
+  "scripts": {
+    "test": "grunt travis --verbose"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/NetsydeMiro/AmazeMaker.git"
+  },
+  "keywords": [
+    "coffeescript", 
+    "jquery",
+    "jquery-ui",
+    "maze",
+    "solver"
+  ],
+  "author": "Miro Koprnicky",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/NetsydeMiro/AmazeMaker/issues"
+  },
+  "homepage": "https://github.com/NetsydeMiro/AmazeMaker"
+}
