@@ -12,11 +12,11 @@ define ['AmazeMaker'], (AmazeMaker) ->
       room.add('NW')
       amaze.set_room(room,0,1)
 
-      room = new AmazeMaker.Room(AmazeMaker.Directions.West, AmazeMaker.Directions.South)
+      room = new AmazeMaker.Room([AmazeMaker.Directions.West, AmazeMaker.Directions.South])
       room.add('NE')
       amaze.set_room(room,1,1)
 
-      room = new AmazeMaker.Room(AmazeMaker.Directions.North, AmazeMaker.Directions.West)
+      room = new AmazeMaker.Room([AmazeMaker.Directions.North, AmazeMaker.Directions.West])
       room.add('SW')
       amaze.set_room(room,1,0)
 
@@ -59,7 +59,6 @@ define ['AmazeMaker'], (AmazeMaker) ->
         amaze.set_position(1,1)
         expect(amaze.current_room()).toBe amaze.rooms[1][1]
         expect(amaze.current_room().contains('NE')).toBe true
-
 
     describe '#set_position()', -> 
 

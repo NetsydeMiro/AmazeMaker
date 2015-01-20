@@ -21,26 +21,38 @@ define ['Directions', 'Room'], (Directions, Room) ->
       @position = x: x, y: y
       @
 
+    room_at: (position) -> 
+      @rooms[position.x][position.y]
+
     current_room: -> 
       if @position
-        @rooms[@position.x][@position.y]
+        @room_at @position
       else null
+
+    set_start: (x,y) -> 
+      @start = x: x, y: y
 
     set_goal: (x,y) -> 
       @goal = x: x, y: y
 
-    go: (direction) -> 
+    new_position: (position,direction) -> 
       new_position = switch direction
         when Directions.North
-          x: @position.x, y: @position.y+1
+          x: position.x, y: position.y+1
         when Directions.East
-          x: @position.x+1, y: @position.y
+          x: position.x+1, y: position.y
         when Directions.South
-          x: @position.x, y: @position.y-1
+          x: position.x, y: position.y-1
         when Directions.West
-          x: @position.x-1, y: @position.y
+          x: position.x-1, y: position.y
 
       if (0 <= new_position.x < @width()) and (0 <= new_position.y < @height())
+        new_position
+      else
+        null
+
+    go: (direction) -> 
+      if new_position = @new_position(@position, direction)
         @set_position new_position.x, new_position.y
       else
         false

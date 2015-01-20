@@ -2,6 +2,20 @@ define ['AmazeMaker'], (AmazeMaker) ->
 
   describe 'Room', -> 
 
+    describe 'Constructor', -> 
+
+      it 'defaults to no doors', ->
+        room = new AmazeMaker.Room
+        expect(room.doors).toEqual []
+
+      it 'initializes doors properly', ->
+        room = new AmazeMaker.Room([AmazeMaker.Directions.North, AmazeMaker.Directions.South])
+        expect(room.doors).toEqual [AmazeMaker.Directions.North, AmazeMaker.Directions.South]
+
+      it 'wraps single door into array', ->
+        room = new AmazeMaker.Room(AmazeMaker.Directions.North)
+        expect(room.doors).toEqual [AmazeMaker.Directions.North]
+
     describe '#contains()', -> 
 
       it 'returns true if room contains item', -> 
@@ -25,8 +39,3 @@ define ['AmazeMaker'], (AmazeMaker) ->
         room.add 'treasure'
         expect(room.is_empty()).toBe false
 
-    describe '#doors', -> 
-
-      it "lists all doors", -> 
-        room = new AmazeMaker.Room([AmazeMaker.Directions.north, AmazeMaker.Directions.south])
-        expect(room.doors).toEqual [AmazeMaker.Directions.north, AmazeMaker.Directions.south]

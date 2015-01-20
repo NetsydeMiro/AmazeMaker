@@ -2,6 +2,8 @@ define ->
 
   class Room 
     constructor: (@doors=[]) -> 
+      unless @doors.constructor == Array
+        @doors = [@doors]
       @items = []
 
     is_empty: () -> 
