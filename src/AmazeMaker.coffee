@@ -1,10 +1,11 @@
 requirejs.config
   baseUrl: 'src/'
 
-define ['Directions', 'Room', 'Maze', 'Solver'], (Directions, Room, Maze, Solver) -> 
+define ['Directions', 'Position', 'Room', 'Maze', 'Solver'], (Directions, Position, Room, Maze, Solver) -> 
 
   class AmazeMaker
     @Directions: Directions
+    @Position: Position
     @Room: Room
     @Maze: Maze
     @Solver: Solver

@@ -1,4 +1,4 @@
-define ['Directions', 'Room'], (Directions, Room) -> 
+define ['Directions', 'Position', 'Room'], (Directions, Position, Room) -> 
 
   class Maze 
 
@@ -6,53 +6,48 @@ define ['Directions', 'Room'], (Directions, Room) ->
       @position = null
       @rooms =  [1..width].map (x) -> 
         [1..height].map (y) -> 
-          new Room [Directions.North, 
-            Directions.East, 
-            Directions.South, 
-            Directions.West]
+          new Room Directions.All
 
     width: -> @rooms.length
     height: -> @rooms[0].length
 
-    set_room: (room, x, y) -> 
-      @rooms[x][y] = room
+    set_room: (position, room) -> 
+      position = Position.wrap position
+      @rooms[position.x][position.y] = room
 
-    set_position: (x,y) -> 
-      @position = x: x, y: y
-      @
+      room.seal_door(dir) for dir in @at_bounds(position)
 
-    room_at: (position) -> 
+      for dir in Directions.All when @within_bounds(adj_pos = position.after_move(dir))
+        adjacent_room = @get_room adj_pos
+        adjacent_room.seal_door(Directions.Opposite[dir]) if room.has_wall(dir)
+        adjacent_room.open_wall(Directions.Opposite[dir]) if room.has_door(dir)
+
+    get_room: (position) -> 
+      position = Position.wrap position
       @rooms[position.x][position.y]
 
-    current_room: -> 
-      if @position
-        @room_at @position
-      else null
+    set_start: (position) -> 
+      position = Position.wrap position
+      @start = position
 
-    set_start: (x,y) -> 
-      @start = x: x, y: y
+    set_goal: (position) -> 
+      position = Position.wrap position
+      @goal = position
 
-    set_goal: (x,y) -> 
-      @goal = x: x, y: y
+    within_bounds: (position) -> 
+      0 <= position.x < @width() and 0 <= position.y < @height()
 
-    new_position: (position,direction) -> 
-      new_position = switch direction
-        when Directions.North
-          x: position.x, y: position.y+1
-        when Directions.East
-          x: position.x+1, y: position.y
-        when Directions.South
-          x: position.x, y: position.y-1
-        when Directions.West
-          x: position.x-1, y: position.y
+    at_bounds: (position) -> 
+      bounds = []
+      if position.y is 0
+        bounds.push Directions.South
+      if position.x is 0
+        bounds.push Directions.West
+      if position.y is @height()-1
+        bounds.push Directions.North
+      if position.x is @width()-1
+        bounds.push Directions.East
 
-      if (0 <= new_position.x < @width()) and (0 <= new_position.y < @height())
-        new_position
-      else
-        null
+      bounds
 
-    go: (direction) -> 
-      if new_position = @new_position(@position, direction)
-        @set_position new_position.x, new_position.y
-      else
-        false
+

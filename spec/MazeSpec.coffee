@@ -2,37 +2,40 @@ define ['AmazeMaker'], (AmazeMaker) ->
 
   describe 'Maze', -> 
 
+    Maze = AmazeMaker.Maze
+    Position = AmazeMaker.Position
+    Room = AmazeMaker.Room
+    Directions = AmazeMaker.Directions
     amaze = null
 
     beforeEach -> 
+      amaze = new Maze(2,2)
 
-      amaze = new AmazeMaker.Maze(2,2)
-
-      room = new AmazeMaker.Room(AmazeMaker.Directions.East)
+      room = new Room(Directions.East)
       room.add('NW')
-      amaze.set_room(room,0,1)
+      amaze.set_room(new Position(0,1), room)
 
-      room = new AmazeMaker.Room([AmazeMaker.Directions.West, AmazeMaker.Directions.South])
+      room = new Room([Directions.West, Directions.South])
       room.add('NE')
-      amaze.set_room(room,1,1)
+      amaze.set_room(new Position(1,1), room)
 
-      room = new AmazeMaker.Room([AmazeMaker.Directions.North, AmazeMaker.Directions.West])
+      room = new Room([Directions.North, Directions.West])
       room.add('SW')
-      amaze.set_room(room,1,0)
+      amaze.set_room(new Position(1,0), room)
 
-      room = new AmazeMaker.Room(AmazeMaker.Directions.East)
+      room = new Room(Directions.East)
       room.add('SE')
-      amaze.set_room(room,0,0)
+      amaze.set_room(new Position(0,0), room)
 
     describe "Constructor", -> 
 
       it 'sets maze to correct height and width', -> 
-        newMaze = new AmazeMaker.Maze(3,4)
+        newMaze = new Maze(3,4)
         expect(newMaze.width()).toEqual 3
         expect(newMaze.height()).toEqual 4
 
       it 'initializes maze to empty rooms with all doors', -> 
-        newMaze = new AmazeMaker.Maze(2,3)
+        newMaze = new Maze(2,3)
         expect(newMaze.rooms.length).toEqual 2
         expect(newMaze.rooms[0].length).toEqual 3
         expect(newMaze.rooms[1].length).toEqual 3
@@ -40,73 +43,131 @@ define ['AmazeMaker'], (AmazeMaker) ->
         for x in [0..1]
           for y in [0..2]
             expect(newMaze.rooms[x][y].is_empty()).toBe true
-            expect(newMaze.rooms[x][y].doors).toEqual [AmazeMaker.Directions.North, 
-              AmazeMaker.Directions.East, 
-              AmazeMaker.Directions.South, 
-              AmazeMaker.Directions.West]
+            expect(newMaze.rooms[x][y].doors).toEqual [Directions.North, 
+              Directions.East, 
+              Directions.South, 
+              Directions.West]
 
-      it 'initializes position to null', -> 
-        newMaze = new AmazeMaker.Maze(3,4)
-        expect(newMaze.position).toBeNull()
+    describe '#set_room()', -> 
+      all_doors = null
+      openroom = null
+      closedroom = null
 
-    describe "#current_room()", -> 
+      beforeEach -> 
+        all_doors = [AmazeMaker.Directions.North, AmazeMaker.Directions.East, 
+        AmazeMaker.Directions.South, AmazeMaker.Directions.West]
+        openroom = new AmazeMaker.Room(all_doors)
+        closedroom = new AmazeMaker.Room([])
+        amaze = new AmazeMaker.Maze(5,5)
 
-      it "returns null if position not set", -> 
-        newMaze = new AmazeMaker.Maze(3,4)
-        expect(newMaze.current_room()).toBeNull()
+      it "seals room's northern/western doors if placed on boundary", -> 
+        amaze.set_room({x:0,y:4}, openroom)
+        expect(openroom.doors.length).toEqual 2
+        expect(openroom.doors).toContain AmazeMaker.Directions.East
+        expect(openroom.doors).toContain AmazeMaker.Directions.South
 
-      it "returns correct room if position set", -> 
-        amaze.set_position(1,1)
-        expect(amaze.current_room()).toBe amaze.rooms[1][1]
-        expect(amaze.current_room().contains('NE')).toBe true
+      it "seals room's southern/eastern doors if placed on boundary", -> 
+        amaze.set_room({x:4,y:0}, openroom)
+        expect(openroom.doors.length).toEqual 2
+        expect(openroom.doors).toContain AmazeMaker.Directions.North
+        expect(openroom.doors).toContain AmazeMaker.Directions.West
 
-    describe '#set_position()', -> 
+      it "does nothing if placed in middle", -> 
+        amaze.set_room({x:3,y:3}, openroom)
+        expect(openroom.doors.length).toEqual 4
+        expect(openroom.doors).toContain AmazeMaker.Directions.North
+        expect(openroom.doors).toContain AmazeMaker.Directions.West
+        expect(openroom.doors).toContain AmazeMaker.Directions.East
+        expect(openroom.doors).toContain AmazeMaker.Directions.South
 
-      it "sets position", -> 
-        amaze.set_position 1, 0
-        expect(amaze.position).toEqual {x:1,y:0}
+      it "seals adjacent rooms' doors if wall placed adjacent", -> 
+        center = new AmazeMaker.Position(3,3)
+        amaze.set_room(center, closedroom)
 
-      it "returns the map for chaining", -> 
-        expect(amaze.set_position 1,0).toBe amaze
+        west = amaze.get_room center.after_move AmazeMaker.Directions.West
+        expect(west.doors.length).toEqual 3
+        expect(west.doors).not.toContain AmazeMaker.Directions.East
 
-    describe '#go()', -> 
+        east = amaze.get_room center.after_move AmazeMaker.Directions.East
+        expect(east.doors.length).toEqual 3
+        expect(east.doors).not.toContain AmazeMaker.Directions.West
 
-      it "returns map when move possible", -> 
-        amaze.set_position(0,0)
-        expect(amaze.go AmazeMaker.Directions.North).toBe amaze
+        north = amaze.get_room center.after_move AmazeMaker.Directions.North
+        expect(north.doors.length).toEqual 3
+        expect(north.doors).not.toContain AmazeMaker.Directions.South
 
-      it "updates map position correctly when moving North", -> 
-        amaze.set_position(0,0)
-        amaze.go AmazeMaker.Directions.North
-        expect(amaze.position).toEqual {x:0, y:1}
+        south = amaze.get_room center.after_move AmazeMaker.Directions.South
+        expect(south.doors.length).toEqual 3
+        expect(south.doors).not.toContain AmazeMaker.Directions.North
 
-      it "updates map position correctly when moving East", -> 
-        amaze.set_position(0,0)
-        amaze.go AmazeMaker.Directions.East
-        expect(amaze.position).toEqual {x:1, y:0}
 
-      it "updates map position correctly when moving South", -> 
-        amaze.set_position(1,1)
-        amaze.go AmazeMaker.Directions.South
-        expect(amaze.position).toEqual {x:1, y:0}
+      it "opens adjacent room's walls if door placed adjacent", -> 
+        center = new AmazeMaker.Position(3,3)
+        # seal all doors
+        for x in [0..4]
+          for y in [0..4]
+            amaze.get_room({x:x,y:y}).doors = []
 
-      it "updates map position correctly when moving West", -> 
-        amaze.set_position(1,1)
-        amaze.go AmazeMaker.Directions.West
-        expect(amaze.position).toEqual {x:0, y:1}
+        # plop room with all doors in middle
+        amaze.set_room(center, openroom)
 
-      it "returns false when attempting to move through north wall", -> 
-        amaze.set_position(1,1)
-        expect(amaze.go AmazeMaker.Directions.North).toBe false
+        west = amaze.get_room center.after_move AmazeMaker.Directions.West
+        expect(west.doors).toEqual [AmazeMaker.Directions.East]
 
-      it "returns false when attempting to move through east wall", -> 
-        amaze.set_position(1,1)
-        expect(amaze.go AmazeMaker.Directions.East).toBe false
+        east = amaze.get_room center.after_move AmazeMaker.Directions.East
+        expect(east.doors).toEqual [AmazeMaker.Directions.West]
 
-      it "returns false when attempting to move through south wall", -> 
-        amaze.set_position(0,0)
-        expect(amaze.go AmazeMaker.Directions.South).toBe false
+        north = amaze.get_room center.after_move AmazeMaker.Directions.North
+        expect(north.doors).toEqual [AmazeMaker.Directions.South]
 
-      it "returns false when attempting to move through west wall", -> 
-        amaze.set_position(0,0)
-        expect(amaze.go AmazeMaker.Directions.West).toBe false
+        south = amaze.get_room center.after_move AmazeMaker.Directions.South
+        expect(south.doors).toEqual [AmazeMaker.Directions.North]
+
+
+    describe '#within_bounds()', -> 
+      position = new AmazeMaker.Position(0,0)
+
+      it "returns true when position in bounds", -> 
+        position.x = 0; position.y = 0
+        expect(amaze.within_bounds position).toBe true
+        position.x = 0; position.y = 1
+        expect(amaze.within_bounds position).toBe true
+        position.x = 1; position.y = 0
+        expect(amaze.within_bounds position).toBe true
+        position.x = 1; position.y = 1
+        expect(amaze.within_bounds position).toBe true
+
+      it "returns false when past a wall", -> 
+        position.x = -1; position.y = 0
+        expect(amaze.within_bounds position).toBe false
+        position.x = 2; position.y = 0
+        expect(amaze.within_bounds position).toBe false
+        position.x = 0; position.y = -1
+        expect(amaze.within_bounds position).toBe false
+        position.x = 0; position.y = 2
+        expect(amaze.within_bounds position).toBe false
+
+    describe '#at_bounds()', -> 
+      position = new AmazeMaker.Position(0,0)
+
+      it "returns bounds when position at bounds", -> 
+        position.x = 0; position.y = 0
+        bounds = amaze.at_bounds position
+        expect(bounds.length).toBe 2
+        expect(bounds).toContain AmazeMaker.Directions.South
+        expect(bounds).toContain AmazeMaker.Directions.West
+
+      it "returns bounds when position at north eastern bounds", -> 
+        position.x = 1; position.y = 1
+        bounds = amaze.at_bounds position
+        expect(bounds.length).toBe 2
+        expect(bounds).toContain AmazeMaker.Directions.North
+        expect(bounds).toContain AmazeMaker.Directions.East
+
+      it "returns empty when not at bounds", -> 
+        amaze = new AmazeMaker.Maze(3,3)
+        position.x = 1; position.y = 1
+        bounds = amaze.at_bounds position
+        expect(bounds).toEqual []
+
+

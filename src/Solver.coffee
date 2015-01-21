@@ -8,16 +8,16 @@ define ['Directions', 'Room', 'Maze'], (Directions, Room, Maze) ->
 
       solve_helper = (maze, position, path) -> 
 
-        if position.x == maze.goal.x and position.y == maze.goal.y
+        if position.equals maze.goal
           [path]
-        else if (room = maze.room_at(position)) and room.contains('breadcrumb')
+        else if (room = maze.get_room(position)) and room.contains('breadcrumb')
           []
         else
           room.add 'breadcrumb'
           paths = []
-          for door in room.doors when (new_pos = maze.new_position(position, door))
+          for direction in room.doors when (new_pos = position.after_move direction) and maze.within_bounds new_pos
             new_path = path.slice()
-            new_path.push(door)
+            new_path.push(direction)
             paths = paths.concat solve_helper(maze, new_pos, new_path)
 
           paths
