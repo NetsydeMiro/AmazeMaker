@@ -1,7 +1,5 @@
-requirejs.config
-  baseUrl: 'src/'
-
-define ['Directions', 'Position', 'Room', 'Maze', 'Solver'], (Directions, Position, Room, Maze, Solver) -> 
+define ['Directions', 'Position', 'Room', 'Maze', 'Solver'], 
+(Directions, Position, Room, Maze, Solver) -> 
 
   class AmazeMaker
     @Directions: Directions

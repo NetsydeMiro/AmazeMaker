@@ -32,16 +32,31 @@ module.exports = (grunt) ->
         options:
           specs: 'spec/*.js'
           template: require('grunt-template-jasmine-requirejs')
+          templateOptions: 
+            requireConfig: 
+              baseUrl: 'src/'
           keepRunner: true
       prod: 
         src: 'src/AmazeMaker.js'
         options:
           specs: 'spec/*.js'
           template: require('grunt-template-jasmine-requirejs')
+          templateOptions: 
+            requireConfig: 
+              baseUrl: 'src/'
+
+    livereloadx: 
+      static: true
+      filter: 
+        [{type: 'exclude', pattern: '{.git,lib,node_modules}/'},
+        {type: 'include', pattern: '*/'},
+        {type: 'include', pattern: '*.{html,js,css}'},
+        {type: 'exclude', pattern: '*'}]
   
   grunt.loadNpmTasks 'grunt-contrib-coffee'
   grunt.loadNpmTasks 'grunt-contrib-watch'
   grunt.loadNpmTasks 'grunt-contrib-jasmine'
+  grunt.loadNpmTasks 'livereloadx'
 
   grunt.registerTask 'compile', ['coffee']
   grunt.registerTask 'test', ['jasmine:prod']
@@ -49,3 +64,5 @@ module.exports = (grunt) ->
 
   grunt.registerTask 'default', ['compile', 'test']
   grunt.registerTask 'travis', ['default']
+
+  grunt.registerTask 'serve', ['livereloadx', 'watch']

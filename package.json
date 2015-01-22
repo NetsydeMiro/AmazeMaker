@@ -12,7 +12,8 @@
     "grunt-contrib-coffee": "^0.12.0",
     "grunt-contrib-jasmine": "^0.8.1",
     "grunt-contrib-watch": "^0.6.1",
-    "grunt-template-jasmine-requirejs": "^0.2.0"
+    "grunt-template-jasmine-requirejs": "^0.2.0",
+    "livereloadx": "^0.3.7"
   },
   "scripts": {
     "test": "grunt travis --verbose"
@@ -22,7 +23,7 @@
     "url": "https://github.com/NetsydeMiro/AmazeMaker.git"
   },
   "keywords": [
-    "coffeescript", 
+    "coffeescript",
     "jquery",
     "jquery-ui",
     "maze",
