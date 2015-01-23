@@ -50,6 +50,54 @@ define ['AmazeMaker'], (AmazeMaker) ->
             expect(newMaze.rooms[x][y].doors).toContain(Directions.West) unless x is 0
             expect(newMaze.rooms[x][y].doors).not.toContain(Directions.West) if x is 0
 
+    describe '#equals()', -> 
+      amaze2 = null
+      
+      beforeEach -> 
+        amaze2 = new Maze(2,2)
+
+        room = new Room(Directions.East)
+        room.add('NW')
+        amaze2.set_room(new Position(0,1), room)
+
+        room = new Room([Directions.West, Directions.South])
+        room.add('NE')
+        amaze2.set_room(new Position(1,1), room)
+
+        room = new Room([Directions.North, Directions.West])
+        room.add('SW')
+        amaze2.set_room(new Position(1,0), room)
+
+        room = new Room(Directions.East)
+        room.add('SE')
+        amaze2.set_room(new Position(0,0), room)
+
+      it 'returns true if mazes have equal rooms, starts, and targets', -> 
+        expect(amaze.equals amaze2).toBe true
+
+      it 'returns false if mazes have different rooms', -> 
+        amaze2.get_room({x:0,y:0}).add 'another item'
+        expect(amaze.equals amaze2).toBe false
+
+      it 'returns false if mazes have different starts', -> 
+        amaze2.set_start {x:0,y:1}
+        expect(amaze.equals amaze2).toBe false
+
+      it 'returns false if mazes have different goals', -> 
+        amaze2.set_goal {x:0,y:1}
+        expect(amaze.equals amaze2).toBe false
+
+      it 'returns true if mazes have same goals', -> 
+        amaze.set_goal {x:0,y:1}
+        amaze2.set_goal {x:0,y:1}
+        expect(amaze.equals amaze2).toBe true
+
+      it 'returns true if mazes have same starts', -> 
+        amaze.set_goal {x:0,y:1}
+        amaze2.set_goal {x:0,y:1}
+        expect(amaze.equals amaze2).toBe true
+
+
     describe '#set_room()', -> 
       all_doors = null
       openroom = null
@@ -172,4 +220,17 @@ define ['AmazeMaker'], (AmazeMaker) ->
         bounds = amaze.at_bounds position
         expect(bounds).toEqual []
 
+    describe '#to_string()', -> 
 
+      it "returns correct string representation", -> 
+
+        amaze.set_start {x:0, y:1}
+        amaze.set_goal {x:0, y:0}
+
+        expect(amaze.to_string()).toEqual """
+        -----
+        |s  |
+        --  -
+        |g  |
+        -----
+        """
