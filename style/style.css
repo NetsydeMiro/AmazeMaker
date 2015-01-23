@@ -1,0 +1,43 @@
+.maze {
+  border-collapse: collapse;
+}
+.maze td {
+  border: 3px solid black;
+  height: 30px;
+  width: 30px;
+}
+.maze td.highlight{
+  background-color: lightgray;
+}
+.rooms {
+  margin: 20px;
+}
+.clear{
+  clear: both;
+}
+.room {
+  border: 3px solid black;
+  height: 20px;
+  width: 20px;
+  float: left;
+  margin-left: 5px;
+}
+.north{
+  border-top: 1px solid lightgray !important;
+}
+.east{
+  border-right: 1px solid lightgray !important;
+}
+.south{
+  border-bottom: 1px solid lightgray !important;
+}
+.west{
+  border-left: 1px solid lightgray !important;
+}
+.goal{
+  background-image: url('images/goal-flag-icon.png');
+}
+.start{
+  background-image: url('images/start-flag-icon.png');
+}
+

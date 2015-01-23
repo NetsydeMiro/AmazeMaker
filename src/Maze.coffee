@@ -4,9 +4,20 @@ define ['Directions', 'Position', 'Room'], (Directions, Position, Room) ->
 
     constructor: (width, height) -> 
       @position = null
-      @rooms =  [1..width].map (x) -> 
-        [1..height].map (y) -> 
-          new Room Directions.All
+
+      # initialize empty rooms, within walled labyrinth
+      @rooms = new Array(width)
+      for x in [0..width-1]
+        @rooms[x] = new Array(height)
+        for y in [0..height-1]
+          doors = []
+          doors.push Directions.North unless y is height-1
+          doors.push Directions.East unless x is width-1
+          doors.push Directions.South unless y is 0
+          doors.push Directions.West unless x is 0
+
+          @rooms[x][y] = new Room(doors)
+
 
     width: -> @rooms.length
     height: -> @rooms[0].length

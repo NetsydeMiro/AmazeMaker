@@ -34,19 +34,21 @@ define ['AmazeMaker'], (AmazeMaker) ->
         expect(newMaze.width()).toEqual 3
         expect(newMaze.height()).toEqual 4
 
-      it 'initializes maze to empty rooms with all doors', -> 
-        newMaze = new Maze(2,3)
-        expect(newMaze.rooms.length).toEqual 2
-        expect(newMaze.rooms[0].length).toEqual 3
-        expect(newMaze.rooms[1].length).toEqual 3
+      it 'initializes maze to empty unwalled rooms within walled labyrinth', -> 
+        newMaze = new Maze(3,3)
 
-        for x in [0..1]
+        for x in [0..2]
           for y in [0..2]
             expect(newMaze.rooms[x][y].is_empty()).toBe true
-            expect(newMaze.rooms[x][y].doors).toEqual [Directions.North, 
-              Directions.East, 
-              Directions.South, 
-              Directions.West]
+
+            expect(newMaze.rooms[x][y].doors).toContain(Directions.North) unless y is 2
+            expect(newMaze.rooms[x][y].doors).not.toContain(Directions.North) if y is 2
+            expect(newMaze.rooms[x][y].doors).toContain(Directions.East) unless x is 2
+            expect(newMaze.rooms[x][y].doors).not.toContain(Directions.East) if x is 2
+            expect(newMaze.rooms[x][y].doors).toContain(Directions.South) unless y is 0
+            expect(newMaze.rooms[x][y].doors).not.toContain(Directions.South) if y is 0
+            expect(newMaze.rooms[x][y].doors).toContain(Directions.West) unless x is 0
+            expect(newMaze.rooms[x][y].doors).not.toContain(Directions.West) if x is 0
 
     describe '#set_room()', -> 
       all_doors = null
@@ -81,7 +83,7 @@ define ['AmazeMaker'], (AmazeMaker) ->
         expect(openroom.doors).toContain AmazeMaker.Directions.South
 
       it "seals adjacent rooms' doors if wall placed adjacent", -> 
-        center = new AmazeMaker.Position(3,3)
+        center = new AmazeMaker.Position(2,2)
         amaze.set_room(center, closedroom)
 
         west = amaze.get_room center.after_move AmazeMaker.Directions.West
