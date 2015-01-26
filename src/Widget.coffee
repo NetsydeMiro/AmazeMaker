@@ -14,6 +14,10 @@ define ['Directions', 'Position', 'Room', 'Maze', 'Solver'],
       @_build_maze()
       @_render_maze()
 
+    load: (serialized_maze) ->
+      @maze = Maze.from_string serialized_maze
+      @_render_maze()
+
     _get_doors: ($draggable_room_element) -> 
       classes_string = $draggable_room_element.attr('class')
       Directions.All.

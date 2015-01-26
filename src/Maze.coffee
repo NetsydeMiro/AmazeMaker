@@ -124,3 +124,42 @@ define ['Directions', 'Position', 'Room'], (Directions, Position, Room) ->
 
       result += '-'
 
+    @from_string: (serialized) -> 
+
+      lines = serialized.split("\n")
+
+      height = Math.floor(lines.length / 2)
+      width = Math.floor(lines[0].length / 2)
+
+      maze = new Maze width, height
+
+      for y in [0..height-1]
+
+        # create north wall
+        for x in [0..width-1]
+          row = height - y - 1
+
+          pos = new Position x, y
+
+          if lines[height-y*2][x*2] == '-'
+            maze.get_room(pos).seal_door Directions.North
+            if maze.within_bounds (pos_north = pos.after_move Directions.North)
+              maze.get_room(pos_north).seal_door Directions.South
+
+          # create western walls
+          if lines[height-y*2+1][x*2] == '|'
+            maze.get_room(pos).seal_door Directions.West
+            if maze.within_bounds (pos_west = pos.after_move Directions.West)
+              maze.get_room(pos_west).seal_door Directions.East
+
+          # create items
+          switch lines[height-y*2+1][x*2+1]
+            when 's'
+              maze.set_start pos
+            when 'g'
+              maze.set_goal pos
+
+          # close eastern edge of labyrinth
+          maze.get_room(x:width-1, y:y).seal_door Directions.East
+
+      maze

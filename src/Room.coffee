@@ -24,7 +24,7 @@ define ->
       return @
 
     open_wall: (direction) -> 
-      if (index = @doors.indexOf direction) is -1
+      if @doors.indexOf(direction) is -1
         @doors.push direction
       return @
 

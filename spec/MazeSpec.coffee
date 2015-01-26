@@ -104,55 +104,55 @@ define ['AmazeMaker'], (AmazeMaker) ->
       closedroom = null
 
       beforeEach -> 
-        all_doors = [AmazeMaker.Directions.North, AmazeMaker.Directions.East, 
-        AmazeMaker.Directions.South, AmazeMaker.Directions.West]
-        openroom = new AmazeMaker.Room(all_doors)
-        closedroom = new AmazeMaker.Room([])
-        amaze = new AmazeMaker.Maze(5,5)
+        all_doors = [Directions.North, Directions.East, 
+        Directions.South, Directions.West]
+        openroom = new Room(all_doors)
+        closedroom = new Room([])
+        amaze = new Maze(5,5)
 
       it "seals room's northern/western doors if placed on boundary", -> 
         amaze.set_room({x:0,y:4}, openroom)
         expect(openroom.doors.length).toEqual 2
-        expect(openroom.doors).toContain AmazeMaker.Directions.East
-        expect(openroom.doors).toContain AmazeMaker.Directions.South
+        expect(openroom.doors).toContain Directions.East
+        expect(openroom.doors).toContain Directions.South
 
       it "seals room's southern/eastern doors if placed on boundary", -> 
         amaze.set_room({x:4,y:0}, openroom)
         expect(openroom.doors.length).toEqual 2
-        expect(openroom.doors).toContain AmazeMaker.Directions.North
-        expect(openroom.doors).toContain AmazeMaker.Directions.West
+        expect(openroom.doors).toContain Directions.North
+        expect(openroom.doors).toContain Directions.West
 
       it "does nothing if placed in middle", -> 
         amaze.set_room({x:3,y:3}, openroom)
         expect(openroom.doors.length).toEqual 4
-        expect(openroom.doors).toContain AmazeMaker.Directions.North
-        expect(openroom.doors).toContain AmazeMaker.Directions.West
-        expect(openroom.doors).toContain AmazeMaker.Directions.East
-        expect(openroom.doors).toContain AmazeMaker.Directions.South
+        expect(openroom.doors).toContain Directions.North
+        expect(openroom.doors).toContain Directions.West
+        expect(openroom.doors).toContain Directions.East
+        expect(openroom.doors).toContain Directions.South
 
       it "seals adjacent rooms' doors if wall placed adjacent", -> 
-        center = new AmazeMaker.Position(2,2)
+        center = new Position(2,2)
         amaze.set_room(center, closedroom)
 
-        west = amaze.get_room center.after_move AmazeMaker.Directions.West
+        west = amaze.get_room center.after_move Directions.West
         expect(west.doors.length).toEqual 3
-        expect(west.doors).not.toContain AmazeMaker.Directions.East
+        expect(west.doors).not.toContain Directions.East
 
-        east = amaze.get_room center.after_move AmazeMaker.Directions.East
+        east = amaze.get_room center.after_move Directions.East
         expect(east.doors.length).toEqual 3
-        expect(east.doors).not.toContain AmazeMaker.Directions.West
+        expect(east.doors).not.toContain Directions.West
 
-        north = amaze.get_room center.after_move AmazeMaker.Directions.North
+        north = amaze.get_room center.after_move Directions.North
         expect(north.doors.length).toEqual 3
-        expect(north.doors).not.toContain AmazeMaker.Directions.South
+        expect(north.doors).not.toContain Directions.South
 
-        south = amaze.get_room center.after_move AmazeMaker.Directions.South
+        south = amaze.get_room center.after_move Directions.South
         expect(south.doors.length).toEqual 3
-        expect(south.doors).not.toContain AmazeMaker.Directions.North
+        expect(south.doors).not.toContain Directions.North
 
 
       it "opens adjacent room's walls if door placed adjacent", -> 
-        center = new AmazeMaker.Position(3,3)
+        center = new Position(3,3)
         # seal all doors
         for x in [0..4]
           for y in [0..4]
@@ -161,21 +161,21 @@ define ['AmazeMaker'], (AmazeMaker) ->
         # plop room with all doors in middle
         amaze.set_room(center, openroom)
 
-        west = amaze.get_room center.after_move AmazeMaker.Directions.West
-        expect(west.doors).toEqual [AmazeMaker.Directions.East]
+        west = amaze.get_room center.after_move Directions.West
+        expect(west.doors).toEqual [Directions.East]
 
-        east = amaze.get_room center.after_move AmazeMaker.Directions.East
-        expect(east.doors).toEqual [AmazeMaker.Directions.West]
+        east = amaze.get_room center.after_move Directions.East
+        expect(east.doors).toEqual [Directions.West]
 
-        north = amaze.get_room center.after_move AmazeMaker.Directions.North
-        expect(north.doors).toEqual [AmazeMaker.Directions.South]
+        north = amaze.get_room center.after_move Directions.North
+        expect(north.doors).toEqual [Directions.South]
 
-        south = amaze.get_room center.after_move AmazeMaker.Directions.South
-        expect(south.doors).toEqual [AmazeMaker.Directions.North]
+        south = amaze.get_room center.after_move Directions.South
+        expect(south.doors).toEqual [Directions.North]
 
 
     describe '#within_bounds()', -> 
-      position = new AmazeMaker.Position(0,0)
+      position = new Position(0,0)
 
       it "returns true when position in bounds", -> 
         position.x = 0; position.y = 0
@@ -198,24 +198,24 @@ define ['AmazeMaker'], (AmazeMaker) ->
         expect(amaze.within_bounds position).toBe false
 
     describe '#at_bounds()', -> 
-      position = new AmazeMaker.Position(0,0)
+      position = new Position(0,0)
 
       it "returns bounds when position at bounds", -> 
         position.x = 0; position.y = 0
         bounds = amaze.at_bounds position
         expect(bounds.length).toBe 2
-        expect(bounds).toContain AmazeMaker.Directions.South
-        expect(bounds).toContain AmazeMaker.Directions.West
+        expect(bounds).toContain Directions.South
+        expect(bounds).toContain Directions.West
 
       it "returns bounds when position at north eastern bounds", -> 
         position.x = 1; position.y = 1
         bounds = amaze.at_bounds position
         expect(bounds.length).toBe 2
-        expect(bounds).toContain AmazeMaker.Directions.North
-        expect(bounds).toContain AmazeMaker.Directions.East
+        expect(bounds).toContain Directions.North
+        expect(bounds).toContain Directions.East
 
       it "returns empty when not at bounds", -> 
-        amaze = new AmazeMaker.Maze(3,3)
+        amaze = new Maze(3,3)
         position.x = 1; position.y = 1
         bounds = amaze.at_bounds position
         expect(bounds).toEqual []
@@ -234,3 +234,27 @@ define ['AmazeMaker'], (AmazeMaker) ->
         |g  |
         -----
         """
+
+    describe '::from_string()', -> 
+
+      it "correctly initializes maze", -> 
+
+        amaze.set_start {x:0, y:1}
+        amaze.set_goal {x:0, y:0}
+
+        amaze.get_room(x:0, y:0).items = []
+        amaze.get_room(x:0, y:1).items = []
+        amaze.get_room(x:1, y:0).items = []
+        amaze.get_room(x:1, y:1).items = []
+
+        serialized = """
+        -----
+        |s  |
+        --  -
+        |g  |
+        -----
+        """
+
+        deserialized = Maze.from_string serialized
+
+        expect(deserialized.equals amaze).toBe true
