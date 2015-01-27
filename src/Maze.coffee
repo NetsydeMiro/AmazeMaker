@@ -106,10 +106,10 @@ define ['Directions', 'Position', 'Room'], (Directions, Position, Room) ->
           else
             result += ' '
 
-          if @start.equals {x:x, y:y}
+          if @start and @start.equals {x:x, y:y}
             result += 's'
 
-          else if @goal.equals {x:x, y:y}
+          else if @goal and @goal.equals {x:x, y:y}
             result += 'g'
 
           else
@@ -133,27 +133,27 @@ define ['Directions', 'Position', 'Room'], (Directions, Position, Room) ->
 
       maze = new Maze width, height
 
-      for y in [0..height-1]
+      for y in [height-1..0]
+        line_no = lines.length - (y + 1) * 2 - 1
 
         # create north wall
         for x in [0..width-1]
-          row = height - y - 1
 
           pos = new Position x, y
 
-          if lines[height-y*2][x*2] == '-'
+          if lines[line_no][x*2+1] == '-'
             maze.get_room(pos).seal_door Directions.North
             if maze.within_bounds (pos_north = pos.after_move Directions.North)
               maze.get_room(pos_north).seal_door Directions.South
 
           # create western walls
-          if lines[height-y*2+1][x*2] == '|'
+          if lines[line_no+1][x*2] == '|'
             maze.get_room(pos).seal_door Directions.West
             if maze.within_bounds (pos_west = pos.after_move Directions.West)
               maze.get_room(pos_west).seal_door Directions.East
 
-          # create items
-          switch lines[height-y*2+1][x*2+1]
+          # create markers, if any
+          switch lines[line_no+1][x*2+1]
             when 's'
               maze.set_start pos
             when 'g'

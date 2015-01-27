@@ -6,17 +6,21 @@ define ['Directions', 'Position', 'Room', 'Maze', 'Solver'],
     options: 
       width: 20
       height: 20
+      serialized: null
+      url: null
 
     _create: () -> 
-      @maze = new Maze(@options.width, @options.height)
-
       @_render_room_types()
-      @_build_maze()
-      @_render_maze()
+      @_render_controls()
 
-    load: (serialized_maze) ->
-      @maze = Maze.from_string serialized_maze
-      @_render_maze()
+      if @options.serialized
+        @_load_string @options.serialized
+      else if @options.url
+        @_load_file @options.url
+      else
+        @maze = new Maze(@options.width, @options.height)
+        @_build_maze()
+        @_render_maze()
 
     _get_doors: ($draggable_room_element) -> 
       classes_string = $draggable_room_element.attr('class')
@@ -58,21 +62,66 @@ define ['Directions', 'Position', 'Room', 'Maze', 'Solver'],
       #wrapper = $('<div class="room_wrapper"></div>').appendTo rooms
 
       for perm in @_permute ['north','east','south','west']
-        room = $('<div class="room ' + perm.join(' ') + '"></div>')
+        room = $('<div class="control room ' + perm.join(' ') + '"></div>')
         room.draggable(
           revert: true
         )
         rooms.append(room)
 
-      $('<div class="room start"></div>').
+      $('<div class="control start" title="start"></div>').
         draggable(revert: true).appendTo(rooms)
 
-      $('<div class="room goal"></div>').
+      $('<div class="control goal" title="goal"></div>').
         draggable(revert: true).appendTo(rooms)
 
       rooms.append('<div class="clear"></div>')
 
       @element.append rooms
+
+    _download: (filename, text) -> 
+      pom = document.createElement 'a'
+      pom.setAttribute 'href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text)
+      pom.setAttribute 'download', filename
+      pom.click()
+
+    _load_string: (string) -> 
+        @maze = Maze.from_string string
+        @_clear_maze()
+        @_build_maze()
+        @_render_maze()
+
+    _load_upload: (file) -> 
+      reader = new FileReader
+      reader.onload = (e) => 
+        @_load_string reader.result
+      reader.readAsText file
+
+    _load_file: (url) -> 
+      request = new XMLHttpRequest
+      request.onload = () => 
+        @_load_string request.responseText
+      request.open 'get', url, true
+      request.send()
+
+    _render_controls: () -> 
+      amaze_maker = @
+      controls = $('<div class="controls"></div>')
+
+      download = $('<button>Download</button>')
+      download.click (e) => 
+        @_download('map.amaze', @maze.to_string())
+      controls.append download
+
+      upload = $('<input type="file">')
+      upload.change (e) => 
+        @_load_upload e.target.files[0]
+      controls.append upload
+
+      controls.append '<div class="clear"></div>'
+      @element.append controls
+
+    _clear_maze: () -> 
+      @element.find('table').remove()
 
     _build_maze: () -> 
       table = $('<table class="maze"></table>')

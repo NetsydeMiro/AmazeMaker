@@ -1,13 +1,5 @@
 require ['Widget'], (Widget) -> 
-  $('#amaze-maker').amazeMaker()
+  $('#amaze-maker').amazeMaker width: 15, height: 15
 
-  serialized = """
-  -----
-  |s  |
-  --  -
-  |g  |
-  -----
-  """
-
-  $('#amaze-maker-test').amazeMaker width:2, height:2
-  $('#amaze-maker-test').amazeMaker 'load', serialized
+require ['Widget'], (Widget) -> 
+  $('#amaze-maker-easy').amazeMaker url: 'mazes/easy.amaze'

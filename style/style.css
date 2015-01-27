@@ -15,13 +15,26 @@
 .clear{
   clear: both;
 }
-.room {
-  border: 3px solid black;
+.control {
   height: 20px;
   width: 20px;
   float: left;
   margin-left: 5px;
 }
+.room {
+  border: 3px solid black;
+}
+
+.goal{
+  background-image: url('images/goal-flag-icon.png');
+  background-size: contain;
+}
+
+.start{
+  background-image: url('images/start-flag-icon.png');
+  background-size: contain;
+}
+
 .north{
   border-top: 1px solid lightgray !important;
 }
@@ -33,11 +46,5 @@
 }
 .west{
   border-left: 1px solid lightgray !important;
-}
-.goal{
-  background-image: url('images/goal-flag-icon.png');
-}
-.start{
-  background-image: url('images/start-flag-icon.png');
 }
 

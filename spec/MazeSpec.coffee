@@ -235,6 +235,16 @@ define ['AmazeMaker'], (AmazeMaker) ->
         -----
         """
 
+      it "works when start and goal aren't set", -> 
+
+        expect(amaze.to_string()).toEqual """
+        -----
+        |   |
+        --  -
+        |   |
+        -----
+        """
+
     describe '::from_string()', -> 
 
       it "correctly initializes maze", -> 

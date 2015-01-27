@@ -50,7 +50,7 @@ module.exports = (grunt) ->
       filter: 
         [{type: 'exclude', pattern: '{.git,lib,node_modules}/'},
         {type: 'include', pattern: '*/'},
-        {type: 'include', pattern: '*.{html,js,css}'},
+        {type: 'include', pattern: '*.{html,js,css,amaze}'},
         {type: 'exclude', pattern: '*'}]
   
   grunt.loadNpmTasks 'grunt-contrib-coffee'
