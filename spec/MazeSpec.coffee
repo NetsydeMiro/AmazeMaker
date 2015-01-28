@@ -268,3 +268,13 @@ define ['AmazeMaker'], (AmazeMaker) ->
         deserialized = Maze.from_string serialized
 
         expect(deserialized.equals amaze).toBe true
+
+    describe '#clear_items()', -> 
+
+      it 'clears maze of items', -> 
+
+        amaze.clear_items()
+
+        for x in [0..1]
+          for y in [0..1]
+            expect(amaze.get_room({x:x,y:y}).is_empty()).toBe true

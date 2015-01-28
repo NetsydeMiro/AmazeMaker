@@ -137,3 +137,12 @@ define ['AmazeMaker'], (AmazeMaker) ->
         room2.add('test3')
 
         expect(room1.equals room2).toBe false
+
+    describe '#clear_items()', -> 
+
+      it 'clears all the rooms items', -> 
+        room1 = new Room 
+        room1.add 'junk'
+        expect(room1.is_empty()).toBe false
+        room1.clear_items()
+        expect(room1.is_empty()).toBe true

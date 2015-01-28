@@ -16,7 +16,6 @@ define ['Directions', 'Position', 'Room'], (Directions, Position, Room) ->
 
           @rooms[x][y] = new Room(doors)
 
-
     width: -> @rooms.length
     height: -> @rooms[0].length
 
@@ -163,3 +162,8 @@ define ['Directions', 'Position', 'Room'], (Directions, Position, Room) ->
           maze.get_room(x:width-1, y:y).seal_door Directions.East
 
       maze
+
+    clear_items: -> 
+      for x in [0..@width()-1]
+        for y in [0..@height()-1]
+          @rooms[x][y].clear_items()

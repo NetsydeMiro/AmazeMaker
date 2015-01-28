@@ -74,6 +74,9 @@ define ['Directions', 'Position', 'Room', 'Maze', 'Solver'],
       $('<div class="control goal" title="goal"></div>').
         draggable(revert: true).appendTo(rooms)
 
+      for direction in Directions.All
+        $('<div class="control move_' + direction + '" title="goal"></div>').appendTo(rooms)
+
       rooms.append('<div class="clear"></div>')
 
       @element.append rooms
@@ -117,8 +120,26 @@ define ['Directions', 'Position', 'Room', 'Maze', 'Solver'],
         @_load_upload e.target.files[0]
       controls.append upload
 
+      solver = $('<button>Solve</button>')
+      solver.click (e) => 
+        @_overlay_solution()
+      controls.append solver
+
+
       controls.append '<div class="clear"></div>'
       @element.append controls
+
+    _overlay_solution: () -> 
+      @maze.clear_items()
+      path = new Solver(@maze).solve_breadth_first()
+      current_position = @maze.start
+
+      while path.length > 0
+        current_cell = @element.find 'td.row' + current_position.y + 
+        '.col' + current_position.x
+        direction = path.shift()
+        current_cell.addClass 'move_' + direction
+        current_position = current_position.after_move direction
 
     _clear_maze: () -> 
       @element.find('table').remove()

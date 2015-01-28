@@ -5,6 +5,8 @@
   border: 3px solid black;
   height: 30px;
   width: 30px;
+  background-size: contain;
+  background-repeat: no-repeat;
 }
 .maze td.highlight{
   background-color: lightgray;
@@ -20,6 +22,8 @@
   width: 20px;
   float: left;
   margin-left: 5px;
+  background-size: contain;
+  background-repeat: no-repeat;
 }
 .room {
   border: 3px solid black;
@@ -27,12 +31,10 @@
 
 .goal{
   background-image: url('images/goal-flag-icon.png');
-  background-size: contain;
 }
 
 .start{
   background-image: url('images/start-flag-icon.png');
-  background-size: contain;
 }
 
 .north{
@@ -48,3 +50,23 @@
   border-left: 1px solid lightgray !important;
 }
 
+.move_north{
+  background-image: url('images/arrow_north.png');
+  background-size: 75% !important;
+  background-position: center;
+}
+.move_east{
+  background-image: url('images/arrow_east.png');
+  background-size: 75% !important;
+  background-position: center;
+}
+.move_south{
+  background-image: url('images/arrow_south.png');
+  background-size: 75% !important;
+  background-position: center;
+}
+.move_west{
+  background-image: url('images/arrow_west.png');
+  background-size: 75% !important;
+  background-position: center;
+}

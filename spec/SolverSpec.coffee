@@ -97,3 +97,4 @@ define ['AmazeMaker'], (AmazeMaker) ->
         paths = solver.solve_breadth_first()
 
         expect(paths).toEqual null
+

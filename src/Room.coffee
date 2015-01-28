@@ -9,11 +9,14 @@ define ->
 
       @items = []
 
-    is_empty: () -> 
+    is_empty: -> 
       @items.length is 0
 
     add: (item) ->
       @items.push item
+
+    clear_items: -> 
+      @items = []
 
     contains: (item) -> 
       @items.indexOf(item) isnt -1
