@@ -1,7 +1,6 @@
-define ['AmazeMaker'], (AmazeMaker) -> 
+define ['Direction', 'Position'], (Direction, Position) -> 
 
   describe 'Position', -> 
-    Position = AmazeMaker.Position
     position = null
 
     beforeEach ->
@@ -23,35 +22,35 @@ define ['AmazeMaker'], (AmazeMaker) ->
         pos2 = new Position(2,1)
         expect(pos1.equals(pos2)).toBe false
 
-    describe '#after_move()', -> 
+    describe '#afterMove()', -> 
 
       it "leaves position unchanged", -> 
-        new_pos = position.after_move AmazeMaker.Directions.North
+        new_pos = position.afterMove Direction.NORTH
         expect(position.x).toEqual 1
         expect(position.y).toEqual 1
         expect(position).toEqual jasmine.any(Position)
 
       it "returns new position", -> 
-        new_pos = position.after_move AmazeMaker.Directions.North
+        new_pos = position.afterMove Direction.NORTH
         expect(new_pos).toEqual jasmine.any(Position)
         expect(new_pos).not.toEqual position
 
       it "correctly calculates move North", -> 
-        new_pos = position.after_move AmazeMaker.Directions.North
+        new_pos = position.afterMove Direction.NORTH
         expect(new_pos.x).toEqual 1
         expect(new_pos.y).toEqual 2
 
       it "correctly calculates move East", -> 
-        new_pos = position.after_move AmazeMaker.Directions.East
+        new_pos = position.afterMove Direction.EAST
         expect(new_pos.x).toEqual 2
         expect(new_pos.y).toEqual 1
 
       it "correctly calculates move South", -> 
-        new_pos = position.after_move AmazeMaker.Directions.South
+        new_pos = position.afterMove Direction.SOUTH
         expect(new_pos.x).toEqual 1
         expect(new_pos.y).toEqual 0
 
       it "correctly calculates move West", -> 
-        new_pos = position.after_move AmazeMaker.Directions.West
+        new_pos = position.afterMove Direction.WEST
         expect(new_pos.x).toEqual 0
         expect(new_pos.y).toEqual 1

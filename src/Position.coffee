@@ -1,26 +1,26 @@
-define ['Directions'], (Directions) -> 
+define ['Direction'], (Direction) -> 
   class Position
 
     constructor: (@x,@y) -> 
 
-    # we allow equality with shorthand position
+    # duck type equality allowed to support shorthand position notation
     equals: (coords) -> 
       @x == coords.x and @y == coords.y
 
-    after_move: (direction) -> 
+    afterMove: (direction) -> 
       coords = switch direction
-        when Directions.North
+        when Direction.NORTH
           x: @x, y: @y+1
-        when Directions.East
+        when Direction.EAST
           x: @x+1, y: @y
-        when Directions.South
+        when Direction.SOUTH
           x: @x, y: @y-1
-        when Directions.West
+        when Direction.WEST
           x: @x-1, y: @y
 
       new Position(coords.x, coords.y)
 
-    # allows shorthand position specification: {x:0,y:0}
+    # to easily support shorthand position notation: {x:0,y:0}
     @wrap: (obj) -> 
       if obj.constructor is Position
         obj

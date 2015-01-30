@@ -1,8 +1,8 @@
-define ['Directions', 'Position', 'Room', 'Maze', 'Solver'], 
-(Directions, Position, Room, Maze, Solver) -> 
+define ['Direction', 'Position', 'Room', 'Maze', 'Solver'], 
+(Direction, Position, Room, Maze, Solver) -> 
 
   class AmazeMaker
-    @Directions: Directions
+    @Direction: Direction
     @Position: Position
     @Room: Room
     @Maze: Maze

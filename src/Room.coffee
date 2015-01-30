@@ -2,40 +2,41 @@ define ->
 
   class Room 
     constructor: (doors=[]) -> 
-      if doors.constructor == Array
+      if doors.constructor is Array
+        # copy the array to avoid any unfortunate external side effects
         @doors = doors.slice()
       else
         @doors = [doors]
 
       @items = []
 
-    is_empty: -> 
+    isEmpty: -> 
       @items.length is 0
 
     add: (item) ->
       @items.push item
 
-    clear_items: -> 
+    clearItems: -> 
       @items = []
 
     contains: (item) -> 
       @items.indexOf(item) isnt -1
 
-    seal_door: (direction) -> 
+    sealDoor: (direction) -> 
       unless (index = @doors.indexOf direction) is -1
         @doors.splice index, 1
-      return @
+      return this
 
-    open_wall: (direction) -> 
+    openWall: (direction) -> 
       if @doors.indexOf(direction) is -1
         @doors.push direction
-      return @
+      return this
 
-    has_door: (direction) -> 
+    hasDoor: (direction) -> 
       @doors.indexOf(direction) isnt -1
 
-    has_wall: (direction) -> 
-      not @has_door direction
+    hasWall: (direction) -> 
+      not @hasDoor direction
 
     equals: (room) -> 
 
@@ -58,5 +59,4 @@ define ->
           return false if this_items[x] isnt room_items[x]
 
         return true
-
 
