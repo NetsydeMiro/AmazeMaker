@@ -1,4 +1,4 @@
-define ['Directions', 'Room', 'Maze'], (Directions, Room, Maze) -> 
+define ['Direction', 'Room', 'Maze'], (Direction, Room, Maze) -> 
 
   class Solver
 
