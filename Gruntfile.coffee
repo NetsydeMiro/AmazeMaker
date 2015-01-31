@@ -28,22 +28,38 @@ module.exports = (grunt) ->
     jasmine: 
       # we keep _SpecRunner.html around when devving to help debug
       dev: 
-        src: 'src/AmazeMaker.js'
+        #src: 'src/AmazeMaker.js'
+        src: 'src/**.*.js'
         options:
           specs: 'spec/*.js'
           template: require('grunt-template-jasmine-requirejs')
           templateOptions: 
             requireConfig: 
               baseUrl: 'src/'
+              paths:
+                'jquery': '../lib/jquery-2.1.3'
+                'jquery-ui': '../lib/jquery-ui-1.11.2-core-interactions-effects'
+              shim: 
+                'jquery-ui':
+                  exports: '$'
+                  deps: ['jquery']
           keepRunner: true
       prod: 
-        src: 'src/AmazeMaker.js'
+        #src: 'src/AmazeMaker.js'
+        src: 'src/**.*.js'
         options:
           specs: 'spec/*.js'
           template: require('grunt-template-jasmine-requirejs')
           templateOptions: 
             requireConfig: 
               baseUrl: 'src/'
+              paths:
+                'jquery': '../lib/jquery-2.1.3'
+                'jquery-ui': '../lib/jquery-ui-1.11.2-core-interactions-effects'
+              shim: 
+                'jquery-ui':
+                  exports: '$'
+                  deps: ['jquery']
 
     livereloadx: 
       static: true
