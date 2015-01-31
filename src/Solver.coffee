@@ -37,7 +37,7 @@ define ['Directions', 'Room', 'Maze'], (Directions, Room, Maze) ->
           if not room.contains 'breadcrumb'
             room.add 'breadcrumb'
 
-            for direction in room.doors when (newPos = position.after_move direction) and @maze.withinBounds newPos
+            for direction in room.doors when (newPos = position.afterMove direction) and @maze.withinBounds newPos
               newPath = path.slice()
               newPath.push direction
 

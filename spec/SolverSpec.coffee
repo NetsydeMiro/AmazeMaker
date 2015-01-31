@@ -6,7 +6,7 @@ define ['AmazeMaker'], (AmazeMaker) ->
   Maze = AmazeMaker.Maze
   Solver = AmazeMaker.Solver
 
-  xdescribe 'Solver', -> 
+  describe 'Solver', -> 
 
     describe '#solveDepthFirst()', -> 
 
@@ -21,7 +21,7 @@ define ['AmazeMaker'], (AmazeMaker) ->
         room = new Room([Direction.WEST, Direction.SOUTH])
         amaze.setRoom({x:1,y:1}, room)
 
-        room = new Room([Direction.North, Direction.WEST])
+        room = new Room([Direction.NORTH, Direction.WEST])
         amaze.setRoom({x:1,y:0}, room)
 
         room = new Room(Direction.EAST)
@@ -69,7 +69,7 @@ define ['AmazeMaker'], (AmazeMaker) ->
         room = new Room([Direction.WEST, Direction.SOUTH])
         amaze.setRoom({x:1,y:1}, room)
 
-        room = new Room([Direction.North, Direction.WEST])
+        room = new Room([Direction.NORTH, Direction.WEST])
         amaze.setRoom({x:1,y:0}, room)
 
         room = new Room(Direction.EAST)
