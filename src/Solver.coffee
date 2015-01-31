@@ -4,45 +4,44 @@ define ['Directions', 'Room', 'Maze'], (Directions, Room, Maze) ->
 
     constructor: (@maze) -> 
 
-    solve_depth_first: -> 
+    solveDepthFirst: -> 
 
-      solve_helper = (maze, position, path) -> 
+      solveHelper = (maze, position, path) -> 
 
         if position.equals maze.goal
           return path
-        else if (room = maze.get_room(position)) and room.contains('breadcrumb')
+        else if (room = maze.getRoom position) and room.contains 'breadcrumb'
           return null
         else
           room.add 'breadcrumb'
-          for direction in room.doors when (new_pos = position.after_move direction) and maze.within_bounds new_pos
-            new_path = path.slice()
-            new_path.push(direction)
-            if (result = solve_helper maze, new_pos, new_path)
+          for direction in room.doors when (newPos = position.afterMove direction) and maze.withinBounds newPos
+            newPath = path.slice()
+            newPath.push direction
+            if (result = solveHelper(maze, newPos, newPath))
               return result
 
         return null
 
+      solveHelper @maze, @maze.start, []
 
-      solve_helper(@maze, @maze.start, [])
+    solveBreadthFirst: -> 
 
-    solve_breadth_first: -> 
+      pathQueue = [{position: @maze.start, path: []}]
 
-      path_queue = [{position: @maze.start, path: []}]
-
-      while path_queue.length > 0 and {position,path} = path_queue.pop()
+      while pathQueue.length > 0 and {position,path} = pathQueue.pop()
         if position.equals @maze.goal
           return path
         else
-          room = @maze.get_room position
+          room = @maze.getRoom position
 
           if not room.contains 'breadcrumb'
             room.add 'breadcrumb'
 
-            for direction in room.doors when (new_pos = position.after_move direction) and @maze.within_bounds new_pos
-              new_path = path.slice()
-              new_path.push direction
+            for direction in room.doors when (newPos = position.afterMove direction) and @maze.withinBounds newPos
+              newPath = path.slice()
+              newPath.push direction
 
-              path_queue.unshift {position: new_pos, path: new_path}
+              pathQueue.unshift {position: newPos, path: newPath}
 
       return null
 

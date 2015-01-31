@@ -1,4 +1,4 @@
-define ['Directions', 'Position', 'Room'], (Directions, Position, Room) -> 
+define ['Direction', 'Position', 'Room'], (Direction, Position, Room) -> 
 
   class Maze 
 
@@ -9,56 +9,58 @@ define ['Directions', 'Position', 'Room'], (Directions, Position, Room) ->
         @rooms[x] = new Array(height)
         for y in [0..height-1]
           doors = []
-          doors.push Directions.North unless y is height-1
-          doors.push Directions.East unless x is width-1
-          doors.push Directions.South unless y is 0
-          doors.push Directions.West unless x is 0
+          doors.push Direction.NORTH unless y is height-1
+          doors.push Direction.EAST unless x is width-1
+          doors.push Direction.SOUTH unless y is 0
+          doors.push Direction.WEST unless x is 0
 
           @rooms[x][y] = new Room(doors)
 
     width: -> @rooms.length
     height: -> @rooms[0].length
 
-    set_room: (position, room) -> 
+    setRoom: (position, room) -> 
       position = Position.wrap position
       @rooms[position.x][position.y] = room
 
-      room.seal_door(dir) for dir in @at_bounds(position)
+      room.sealDoor(dir) for dir in @atBounds(position)
 
-      for dir in Directions.All when @within_bounds(adj_pos = position.after_move(dir))
-        adjacent_room = @get_room adj_pos
-        adjacent_room.seal_door(Directions.Opposite[dir]) if room.has_wall(dir)
-        adjacent_room.open_wall(Directions.Opposite[dir]) if room.has_door(dir)
+      for dir in Direction.ALL when @withinBounds(adjPos = position.afterMove dir)
+        adjacentRoom = @getRoom adjPos
+        adjacentRoom.sealDoor(Direction.OPPOSITE[dir]) if room.hasWall dir
+        adjacentRoom.openWall(Direction.OPPOSITE[dir]) if room.hasDoor dir
 
-    get_room: (position) -> 
+    getRoom: (position) -> 
       position = Position.wrap position
       @rooms[position.x][position.y]
 
-    set_start: (position) -> 
+    setStart: (position) -> 
       position = Position.wrap position
       @start = position
 
-    set_goal: (position) -> 
+    setGoal: (position) -> 
       position = Position.wrap position
       @goal = position
 
-    within_bounds: (position) -> 
+    withinBounds: (position) -> 
       0 <= position.x < @width() and 0 <= position.y < @height()
 
-    at_bounds: (position) -> 
+    # returns boundaries on with position resides (if any)
+    atBounds: (position) -> 
       bounds = []
       if position.y is 0
-        bounds.push Directions.South
+        bounds.push Direction.SOUTH
       if position.x is 0
-        bounds.push Directions.West
+        bounds.push Direction.WEST
       if position.y is @height()-1
-        bounds.push Directions.North
+        bounds.push Direction.NORTH
       if position.x is @width()-1
-        bounds.push Directions.East
+        bounds.push Direction.EAST
 
       bounds
 
     equals: (maze) -> 
+      # maze must have same dimensions, and either equal or unset starts and goals
       if @height() isnt maze.height() or
       @width() isnt maze.width() or
       @start isnt maze.start and (not @start or not maze.start or not @start.equals maze.start) or
@@ -68,6 +70,7 @@ define ['Directions', 'Position', 'Room'], (Directions, Position, Room) ->
 
       else
 
+        # rooms must all be equal
         for x in [0..@width()-1]
           for y in [0..@height()-1]
             if not @rooms[x][y].equals maze.rooms[x][y]
@@ -75,7 +78,8 @@ define ['Directions', 'Position', 'Room'], (Directions, Position, Room) ->
 
         return true
 
-    to_string: () -> 
+    # returns ascii art representation of maze
+    toString: () -> 
       result = ""
 
       for y in [@height()-1..0]
@@ -84,10 +88,10 @@ define ['Directions', 'Position', 'Room'], (Directions, Position, Room) ->
         for x in [0..@width()-1]
           room = @rooms[x][y]
 
-          if room.has_wall Directions.North
+          if room.hasWall Direction.NORTH
             result += '--'
           else
-            if room.has_wall Directions.West
+            if room.hasWall Direction.WEST
               # north west corner
               result += '- '
             else
@@ -100,7 +104,7 @@ define ['Directions', 'Position', 'Room'], (Directions, Position, Room) ->
         for x in [0..@width()-1]
           room = @rooms[x][y]
 
-          if room.has_wall Directions.West
+          if room.hasWall Direction.WEST
             result += '|'
           else
             result += ' '
@@ -123,7 +127,8 @@ define ['Directions', 'Position', 'Room'], (Directions, Position, Room) ->
 
       result += '-'
 
-    @from_string: (serialized) -> 
+    # builds maze from ascii art representation
+    @fromString: (serialized) -> 
 
       lines = serialized.split("\n")
 
@@ -141,29 +146,29 @@ define ['Directions', 'Position', 'Room'], (Directions, Position, Room) ->
           pos = new Position x, y
 
           if lines[line_no][x*2+1] == '-'
-            maze.get_room(pos).seal_door Directions.North
-            if maze.within_bounds (pos_north = pos.after_move Directions.North)
-              maze.get_room(pos_north).seal_door Directions.South
+            maze.getRoom(pos).sealDoor Direction.NORTH
+            if maze.withinBounds (pos_north = pos.afterMove Direction.NORTH)
+              maze.getRoom(pos_north).sealDoor Direction.SOUTH
 
           # create western walls
           if lines[line_no+1][x*2] == '|'
-            maze.get_room(pos).seal_door Directions.West
-            if maze.within_bounds (pos_west = pos.after_move Directions.West)
-              maze.get_room(pos_west).seal_door Directions.East
+            maze.getRoom(pos).sealDoor Direction.WEST
+            if maze.withinBounds (pos_west = pos.afterMove Direction.WEST)
+              maze.getRoom(pos_west).sealDoor Direction.EAST
 
           # create markers, if any
           switch lines[line_no+1][x*2+1]
             when 's'
-              maze.set_start pos
+              maze.setStart pos
             when 'g'
-              maze.set_goal pos
+              maze.setGoal pos
 
           # close eastern edge of labyrinth
-          maze.get_room(x:width-1, y:y).seal_door Directions.East
+          maze.getRoom(x:width-1, y:y).sealDoor Direction.EAST
 
       maze
 
-    clear_items: -> 
+    clearItems: -> 
       for x in [0..@width()-1]
         for y in [0..@height()-1]
-          @rooms[x][y].clear_items()
+          @rooms[x][y].clearItems()

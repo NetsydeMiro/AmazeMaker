@@ -1,148 +1,144 @@
-define ['AmazeMaker'], (AmazeMaker) -> 
-
-  Room = AmazeMaker.Room
-  Directions = AmazeMaker.Directions
+define ['Direction', 'Room'], (Direction, Room) -> 
 
   describe 'Room', -> 
 
-    describe 'Constructor', -> 
+    describe 'constructor', -> 
 
       it 'defaults to no doors', ->
         room = new Room
         expect(room.doors).toEqual []
 
       it 'initializes doors properly', ->
-        room = new Room([Directions.North, Directions.South])
-        expect(room.doors).toEqual [Directions.North, Directions.South]
+        room = new Room [Direction.NORTH, Direction.SOUTH]
+        expect(room.doors).toEqual [Direction.NORTH, Direction.SOUTH]
 
       it 'wraps single door into array', ->
-        room = new Room(Directions.North)
-        expect(room.doors).toEqual [Directions.North]
+        room = new Room Direction.NORTH
+        expect(room.doors).toEqual [Direction.NORTH]
 
     describe '#contains()', -> 
 
       it 'returns true if room contains item', -> 
-        room = new Room()
+        room = new Room
         room.add 'treasure'
         expect(room.contains 'treasure').toBe true
 
       it "returns false if room doesn't contain item", -> 
-        room = new Room()
+        room = new Room
         room.add 'treasure'
         expect(room.contains 'monster').toBe false
 
-    describe '#is_empty()', -> 
+    describe '#isEmpty()', -> 
 
       it 'returns true if room empty', -> 
-        room = new Room()
-        expect(room.is_empty()).toBe true
+        room = new Room
+        expect(room.isEmpty()).toBe true
 
       it "returns false if room not empty", -> 
-        room = new Room()
+        room = new Room
         room.add 'treasure'
-        expect(room.is_empty()).toBe false
+        expect(room.isEmpty()).toBe false
 
-    describe '#has_door()', -> 
+    describe '#hasDoor()', -> 
 
       it 'is true if room has door at specified diretion', -> 
-        room = new Room(Directions.South)
-        expect(room.has_door Directions.South).toBe true
+        room = new Room(Direction.SOUTH)
+        expect(room.hasDoor Direction.SOUTH).toBe true
 
       it 'is false if room has wall at specified diretion', -> 
-        room = new Room(Directions.South)
-        expect(room.has_door Directions.North).toBe false
+        room = new Room(Direction.SOUTH)
+        expect(room.hasDoor Direction.NORTH).toBe false
 
-    describe '#has_wall()', -> 
+    describe '#hasWall()', -> 
 
       it 'is true if room has wall at specified direction', -> 
-        room = new Room(Directions.South)
-        expect(room.has_wall Directions.North).toBe true
+        room = new Room(Direction.SOUTH)
+        expect(room.hasWall Direction.NORTH).toBe true
 
       it 'is false if room has door at specified direction', -> 
-        room = new Room(Directions.South)
-        expect(room.has_wall Directions.South).toBe false
+        room = new Room(Direction.SOUTH)
+        expect(room.hasWall Direction.SOUTH).toBe false
 
-
-    describe '#seal_door()', -> 
+    describe '#sealDoor()', -> 
 
       it 'removes door if present', -> 
-        room = new Room(Directions.North)
+        room = new Room(Direction.NORTH)
         expect(room.doors.length).toEqual 1
 
-        room.seal_door Directions.North
+        room.sealDoor Direction.NORTH
         expect(room.doors.length).toEqual 0
 
       it 'leaves wall if present', -> 
-        room = new Room(Directions.North)
+        room = new Room(Direction.NORTH)
         expect(room.doors.length).toEqual 1
 
-        room.seal_door Directions.South
+        room.sealDoor Direction.SOUTH
         expect(room.doors.length).toEqual 1
 
       it 'returns self for chaining', -> 
         room = new Room
-        expect(room.seal_door Directions.South).toBe room
+        expect(room.sealDoor Direction.SOUTH).toBe room
 
-    describe '#open_wall()', -> 
+    describe '#openWall()', -> 
 
       it 'inserts door if not present', -> 
         room = new Room([])
         expect(room.doors.length).toEqual 0
 
-        room.open_wall Directions.North
-        expect(room.doors).toEqual [Directions.North]
+        room.openWall Direction.NORTH
+        expect(room.doors).toEqual [Direction.NORTH]
 
       it 'leaves door if present', -> 
-        room = new Room(Directions.North)
+        room = new Room(Direction.NORTH)
         expect(room.doors.length).toEqual 1
 
-        room.open_wall Directions.North
-        expect(room.doors).toEqual [Directions.North]
+        room.openWall Direction.NORTH
+        expect(room.doors).toEqual [Direction.NORTH]
 
       it 'returns self for chaining', -> 
         room = new Room
-        expect(room.open_wall Directions.South).toBe room
+        expect(room.openWall Direction.SOUTH).toBe room
 
     describe '#equals()', -> 
 
       it 'returns true if rooms have same doors and items', -> 
-        room1 = new Room [Directions.North, Directions.South]
-        room2 = new Room [Directions.South, Directions.North]
+        room1 = new Room [Direction.NORTH, Direction.SOUTH]
+        room2 = new Room [Direction.SOUTH, Direction.NORTH]
 
-        room1.add('test1')
-        room1.add('test2')
-        room2.add('test2')
-        room2.add('test1')
+        room1.add 'x'
+        room1.add 'y'
+        room2.add 'y'
+        room2.add 'x'
 
         expect(room1.equals room2).toBe true
 
       it 'returns false if rooms have different doors', -> 
-        room1 = new Room [Directions.North, Directions.South]
-        room2 = new Room [Directions.South, Directions.East]
+        room1 = new Room [Direction.NORTH, Direction.SOUTH]
+        room2 = new Room [Direction.SOUTH, Direction.EAST]
 
-        room1.add('test1')
-        room1.add('test2')
-        room2.add('test2')
-        room2.add('test1')
+        room1.add 'x'
+        room1.add 'y'
+        room2.add 'y'
+        room2.add 'x'
 
         expect(room1.equals room2).toBe false
 
       it 'returns false if rooms have different items', -> 
-        room1 = new Room [Directions.North, Directions.South]
-        room2 = new Room [Directions.South, Directions.North]
+        room1 = new Room [Direction.NORTH, Direction.SOUTH]
+        room2 = new Room [Direction.SOUTH, Direction.NORTH]
 
-        room1.add('test1')
-        room1.add('test2')
-        room2.add('test1')
-        room2.add('test3')
+        room1.add 'x'
+        room1.add 'y'
+        room2.add 'x'
+        room2.add 'z'
 
         expect(room1.equals room2).toBe false
 
-    describe '#clear_items()', -> 
+    describe '#clearItems()', -> 
 
       it 'clears all the rooms items', -> 
         room1 = new Room 
         room1.add 'junk'
-        expect(room1.is_empty()).toBe false
-        room1.clear_items()
-        expect(room1.is_empty()).toBe true
+        expect(room1.isEmpty()).toBe false
+        room1.clearItems()
+        expect(room1.isEmpty()).toBe true

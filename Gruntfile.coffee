@@ -65,4 +65,4 @@ module.exports = (grunt) ->
   grunt.registerTask 'default', ['compile', 'test']
   grunt.registerTask 'travis', ['default']
 
-  grunt.registerTask 'serve', ['livereloadx', 'watch']
+  grunt.registerTask 'serve', ['livereloadx', 'watch:compile']

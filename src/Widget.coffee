@@ -1,5 +1,5 @@
-define ['Directions', 'Position', 'Room', 'Maze', 'Solver'], 
-(Directions, Position, Room, Maze, Solver) -> 
+define ['Direction', 'Position', 'Room', 'Maze', 'Solver'], 
+(Direction, Position, Room, Maze, Solver) -> 
 
   $.widget 'netsyde.amazeMaker', 
 
@@ -10,54 +10,54 @@ define ['Directions', 'Position', 'Room', 'Maze', 'Solver'],
       url: null
 
     _create: -> 
-      @_render_room_types()
-      @_render_controls()
+      @_renderRoomTypes()
+      @_renderControls()
 
       if @options.serialized
-        @_load_string @options.serialized
+        @_loadString @options.serialized
       else if @options.url
-        @_load_file @options.url
+        @_loadFile @options.url
       else
         @maze = new Maze @options.width, @options.height
-        @_build_maze()
-        @_render_maze()
+        @_buildMaze()
+        @_renderMaze()
 
-    _get_doors: ($draggable_room_element) -> 
-      classes_string = $draggable_room_element.attr 'class'
-      Directions.All.
+    _getDoors: ($draggableRoomElement) -> 
+      klass = $draggableRoomElement.attr 'class'
+      Direction.ALL.
         map((dir) -> dir.toLowerCase()).
-        filter((dir) -> classes_string.indexOf(dir) isnt -1)
+        filter((dir) -> klass.indexOf(dir) isnt -1)
 
-    _get_position: ($droppable_room_element) -> 
-      classes_string = $droppable_room_element.attr 'class'
-      x = parseInt classes_string.match(/col(\d+)/)[1]
-      y = parseInt classes_string.match(/row(\d+)/)[1]
+    _getPosition: ($droppableRoomElement) -> 
+      klass = $droppableRoomElement.attr 'class'
+      x = parseInt klass.match(/col(\d+)/)[1]
+      y = parseInt klass.match(/row(\d+)/)[1]
       new Position x,y
 
-    _get_marker: ($draggable_room_element) -> 
-      ['start','goal'].filter((klass) -> $draggable_room_element.hasClass klass)[0]
+    _getMarker: ($draggableRoomElement) -> 
+      ['start','goal'].filter((klass) -> $draggableRoomElement.hasClass klass)[0]
 
-    _get_drop_handler: -> 
-        maze_maker = @
+    _getDropHandler: -> 
+        amazeMaker = @
         (e,ui) -> 
-          $dragged_item = ui.draggable
-          $drop_target = $ @
+          $draggedItem = ui.draggable
+          $dropTarget = $ @
 
-          position = maze_maker._get_position $drop_target
-          special_class = maze_maker._get_marker $dragged_item
+          position = amazeMaker._getPosition $dropTarget
+          specialClass = amazeMaker._getMarker $draggedItem
 
-          if special_class is 'start'
-            maze_maker.maze.set_start position
-          else if special_class is 'goal'
-            maze_maker.maze.set_goal position
+          if specialClass is 'start'
+            amazeMaker.maze.setStart position
+          else if specialClass is 'goal'
+            amazeMaker.maze.setGoal position
           else
-            doors = maze_maker._get_doors $dragged_item
+            doors = amazeMaker._getDoors $draggedItem
             room = new Room doors
-            maze_maker.maze.set_room position, room
+            amazeMaker.maze.setRoom position, room
           
-          maze_maker._render_maze()
+          amazeMaker._renderMaze()
 
-    _render_room_types: -> 
+    _renderRoomTypes: -> 
       rooms = $('<div class="rooms"></div>')
 
       for perm in @_permute ['north','east','south','west']
@@ -81,68 +81,66 @@ define ['Directions', 'Position', 'Room', 'Maze', 'Solver'],
       pom.setAttribute 'download', filename
       pom.click()
 
-    _load_string: (string) -> 
-        @maze = Maze.from_string string
-        @_clear_maze()
-        @_build_maze()
-        @_render_maze()
+    _loadString: (string) -> 
+        @maze = Maze.fromString string
+        @_clearMaze()
+        @_buildMaze()
+        @_renderMaze()
 
-    _load_upload: (file) -> 
+    _loadUpload: (file) -> 
       reader = new FileReader
       reader.onload = (e) => 
-        @_load_string reader.result
+        @_loadString reader.result
       reader.readAsText file
 
-    _load_file: (url) -> 
+    _loadFile: (url) -> 
       request = new XMLHttpRequest
       request.onload = => 
-        @_load_string request.responseText
+        @_loadString request.responseText
       request.open 'get', url, true
       request.send()
 
-    _render_controls: () -> 
-      amaze_maker = @
+    _renderControls: () -> 
       controls = $('<div class="controls"></div>')
 
       download = $('<button>Download</button>')
       download.click (e) => 
-        @_download 'map.amaze', @maze.to_string()
+        @_download 'map.amaze', @maze.toString()
       controls.append download
 
       upload = $('<input type="file">')
       upload.change (e) => 
-        @_load_upload e.target.files[0]
+        @_loadUpload e.target.files[0]
       controls.append upload
 
       solver = $('<button>Solve</button>')
       solver.click (e) => 
-        @_overlay_solution()
+        @_overlaySolution()
       controls.append solver
-
 
       controls.append '<div class="clear"></div>'
       @element.append controls
 
-    _overlay_solution: () -> 
-      @maze.clear_items()
-      path = new Solver(@maze).solve_breadth_first()
-      current_position = @maze.start
+    _overlaySolution: () -> 
+      @maze.clearItems()
+      path = new Solver(@maze).solveBreadthFirst()
+      currentPosition = @maze.start
 
       if path is null
         alert "No solution"
       else
         while path.length > 0
-          current_cell = @element.find 'td.row' + current_position.y + 
-          '.col' + current_position.x
+          currentCell = @element.find 'td.row' + currentPosition.y + 
+          '.col' + currentPosition.x
           direction = path.shift()
-          unless current_position.equals @maze.start
-            current_cell.addClass 'move_' + direction
-          current_position = current_position.after_move direction
+          unless currentPosition.equals @maze.start
+            currentCell.addClass 'move_' + direction
+          currentPosition = currentPosition.afterMove direction
 
-    _clear_maze: -> 
+    _clearMaze: -> 
       @element.find('table').remove()
 
-    _build_maze: -> 
+    _buildMaze: -> 
       table = $('<table class="maze"></table>')
 
       for ri in [@maze.height()-1..0]
@@ -153,22 +151,22 @@ define ['Directions', 'Position', 'Room', 'Maze', 'Solver'],
             addClass('col' + ci).
             droppable( 
               hoverClass: 'highlight'
-              drop: @_get_drop_handler(@)
+              drop: @_getDropHandler(@)
             ).
             appendTo row
 
       @element.append table
 
-    _render_maze: -> 
+    _renderMaze: -> 
       table = @element.find 'table'
 
       for ri in [0..@maze.height()-1]
         for ci in [0..@maze.width()-1]
-          doors = @maze.get_room(x:ci,y:ri).doors
-          class_string = 'row' + ri + ' col' + ci + ' ' + 
+          doors = @maze.getRoom(x:ci,y:ri).doors
+          klass = 'row' + ri + ' col' + ci + ' ' + 
             doors.map((d) -> d.toLowerCase()).join(' ')
           cell = table.find('td.row' + ri + '.col' + ci)
-          cell.attr 'class', class_string
+          cell.attr 'class', klass
 
           if @maze.start and @maze.start.equals {x:ci,y:ri}
             cell.addClass 'start'
@@ -184,8 +182,8 @@ define ['Directions', 'Position', 'Room', 'Maze', 'Solver'],
         head = set[set.length-1]
         tail = set.slice 0, set.length-1
 
-        permuted_tail = @_permute tail
-        result = permuted_tail.concat(permuted_tail.map (perm) -> perm.concat(head))
+        permutedTail = @_permute tail
+        result = permutedTail.concat(permutedTail.map (perm) -> perm.concat(head))
 
         result.sort (perm1, perm2) -> perm1.length - perm2.length
 
