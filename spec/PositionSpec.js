@@ -1,8 +1,7 @@
 (function() {
-  define(['AmazeMaker'], function(AmazeMaker) {
+  define(['Direction', 'Position'], function(Direction, Position) {
     return describe('Position', function() {
-      var Position, position;
-      Position = AmazeMaker.Position;
+      var position;
       position = null;
       beforeEach(function() {
         return position = new Position(1, 1);
@@ -24,41 +23,41 @@
           return expect(pos1.equals(pos2)).toBe(false);
         });
       });
-      return describe('#after_move()', function() {
+      return describe('#afterMove()', function() {
         it("leaves position unchanged", function() {
           var new_pos;
-          new_pos = position.after_move(AmazeMaker.Directions.North);
+          new_pos = position.afterMove(Direction.NORTH);
           expect(position.x).toEqual(1);
           expect(position.y).toEqual(1);
           return expect(position).toEqual(jasmine.any(Position));
         });
         it("returns new position", function() {
           var new_pos;
-          new_pos = position.after_move(AmazeMaker.Directions.North);
+          new_pos = position.afterMove(Direction.NORTH);
           expect(new_pos).toEqual(jasmine.any(Position));
           return expect(new_pos).not.toEqual(position);
         });
         it("correctly calculates move North", function() {
           var new_pos;
-          new_pos = position.after_move(AmazeMaker.Directions.North);
+          new_pos = position.afterMove(Direction.NORTH);
           expect(new_pos.x).toEqual(1);
           return expect(new_pos.y).toEqual(2);
         });
         it("correctly calculates move East", function() {
           var new_pos;
-          new_pos = position.after_move(AmazeMaker.Directions.East);
+          new_pos = position.afterMove(Direction.EAST);
           expect(new_pos.x).toEqual(2);
           return expect(new_pos.y).toEqual(1);
         });
         it("correctly calculates move South", function() {
           var new_pos;
-          new_pos = position.after_move(AmazeMaker.Directions.South);
+          new_pos = position.afterMove(Direction.SOUTH);
           expect(new_pos.x).toEqual(1);
           return expect(new_pos.y).toEqual(0);
         });
         return it("correctly calculates move West", function() {
           var new_pos;
-          new_pos = position.after_move(AmazeMaker.Directions.West);
+          new_pos = position.afterMove(Direction.WEST);
           expect(new_pos.x).toEqual(0);
           return expect(new_pos.y).toEqual(1);
         });

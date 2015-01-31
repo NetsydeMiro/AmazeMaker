@@ -1,5 +1,5 @@
 (function() {
-  define(['Directions'], function(Directions) {
+  define(['Direction'], function(Direction) {
     var Position;
     return Position = (function() {
       function Position(x, y) {
@@ -11,26 +11,26 @@
         return this.x === coords.x && this.y === coords.y;
       };
 
-      Position.prototype.after_move = function(direction) {
+      Position.prototype.afterMove = function(direction) {
         var coords;
         coords = (function() {
           switch (direction) {
-            case Directions.North:
+            case Direction.NORTH:
               return {
                 x: this.x,
                 y: this.y + 1
               };
-            case Directions.East:
+            case Direction.EAST:
               return {
                 x: this.x + 1,
                 y: this.y
               };
-            case Directions.South:
+            case Direction.SOUTH:
               return {
                 x: this.x,
                 y: this.y - 1
               };
-            case Directions.West:
+            case Direction.WEST:
               return {
                 x: this.x - 1,
                 y: this.y

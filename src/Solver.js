@@ -1,65 +1,65 @@
 (function() {
-  define(['Directions', 'Room', 'Maze'], function(Directions, Room, Maze) {
+  define(['Direction', 'Room', 'Maze'], function(Direction, Room, Maze) {
     var Solver;
     return Solver = (function() {
       function Solver(maze) {
         this.maze = maze;
       }
 
-      Solver.prototype.solve_depth_first = function() {
-        var solve_helper;
-        solve_helper = function(maze, position, path) {
-          var direction, new_path, new_pos, result, room, _i, _len, _ref;
+      Solver.prototype.solveDepthFirst = function() {
+        var solveHelper;
+        solveHelper = function(maze, position, path) {
+          var direction, newPath, newPos, result, room, _i, _len, _ref;
           if (position.equals(maze.goal)) {
             return path;
-          } else if ((room = maze.get_room(position)) && room.contains('breadcrumb')) {
+          } else if ((room = maze.getRoom(position)) && room.contains('breadcrumb')) {
             return null;
           } else {
             room.add('breadcrumb');
             _ref = room.doors;
             for (_i = 0, _len = _ref.length; _i < _len; _i++) {
               direction = _ref[_i];
-              if (!((new_pos = position.after_move(direction)) && maze.within_bounds(new_pos))) {
+              if (!((newPos = position.afterMove(direction)) && maze.withinBounds(newPos))) {
                 continue;
               }
-              new_path = path.slice();
-              new_path.push(direction);
-              if ((result = solve_helper(maze, new_pos, new_path))) {
+              newPath = path.slice();
+              newPath.push(direction);
+              if ((result = solveHelper(maze, newPos, newPath))) {
                 return result;
               }
             }
           }
           return null;
         };
-        return solve_helper(this.maze, this.maze.start, []);
+        return solveHelper(this.maze, this.maze.start, []);
       };
 
-      Solver.prototype.solve_breadth_first = function() {
-        var direction, new_path, new_pos, path, path_queue, position, room, _i, _len, _ref, _ref1;
-        path_queue = [
+      Solver.prototype.solveBreadthFirst = function() {
+        var direction, newPath, newPos, path, pathQueue, position, room, _i, _len, _ref, _ref1;
+        pathQueue = [
           {
             position: this.maze.start,
             path: []
           }
         ];
-        while (path_queue.length > 0 && (_ref1 = path_queue.pop(), position = _ref1.position, path = _ref1.path, _ref1)) {
+        while (pathQueue.length > 0 && (_ref1 = pathQueue.pop(), position = _ref1.position, path = _ref1.path, _ref1)) {
           if (position.equals(this.maze.goal)) {
             return path;
           } else {
-            room = this.maze.get_room(position);
+            room = this.maze.getRoom(position);
             if (!room.contains('breadcrumb')) {
               room.add('breadcrumb');
               _ref = room.doors;
               for (_i = 0, _len = _ref.length; _i < _len; _i++) {
                 direction = _ref[_i];
-                if (!((new_pos = position.after_move(direction)) && this.maze.within_bounds(new_pos))) {
+                if (!((newPos = position.afterMove(direction)) && this.maze.withinBounds(newPos))) {
                   continue;
                 }
-                new_path = path.slice();
-                new_path.push(direction);
-                path_queue.unshift({
-                  position: new_pos,
-                  path: new_path
+                newPath = path.slice();
+                newPath.push(direction);
+                pathQueue.unshift({
+                  position: newPos,
+                  path: newPath
                 });
               }
             }

@@ -1,5 +1,5 @@
 (function() {
-  define(['Directions', 'Position', 'Room', 'Maze', 'Solver'], function(Directions, Position, Room, Maze, Solver) {
+  define(['Direction', 'Position', 'Room', 'Maze', 'Solver'], function(Direction, Position, Room, Maze, Solver) {
     return $.widget('netsyde.amazeMaker', {
       options: {
         width: 20,
@@ -8,61 +8,61 @@
         url: null
       },
       _create: function() {
-        this._render_room_types();
-        this._render_controls();
+        this._renderRoomTypes();
+        this._renderControls();
         if (this.options.serialized) {
-          return this._load_string(this.options.serialized);
+          return this._loadString(this.options.serialized);
         } else if (this.options.url) {
-          return this._load_file(this.options.url);
+          return this._loadFile(this.options.url);
         } else {
           this.maze = new Maze(this.options.width, this.options.height);
-          this._build_maze();
-          return this._render_maze();
+          this._buildMaze();
+          return this._renderMaze();
         }
       },
-      _get_doors: function($draggable_room_element) {
-        var classes_string;
-        classes_string = $draggable_room_element.attr('class');
-        return Directions.All.map(function(dir) {
+      _getDoors: function($draggableRoomElement) {
+        var klass;
+        klass = $draggableRoomElement.attr('class');
+        return Direction.ALL.map(function(dir) {
           return dir.toLowerCase();
         }).filter(function(dir) {
-          return classes_string.indexOf(dir) !== -1;
+          return klass.indexOf(dir) !== -1;
         });
       },
-      _get_position: function($droppable_room_element) {
-        var classes_string, x, y;
-        classes_string = $droppable_room_element.attr('class');
-        x = parseInt(classes_string.match(/col(\d+)/)[1]);
-        y = parseInt(classes_string.match(/row(\d+)/)[1]);
+      _getPosition: function($droppableRoomElement) {
+        var klass, x, y;
+        klass = $droppableRoomElement.attr('class');
+        x = parseInt(klass.match(/col(\d+)/)[1]);
+        y = parseInt(klass.match(/row(\d+)/)[1]);
         return new Position(x, y);
       },
-      _get_marker: function($draggable_room_element) {
+      _getMarker: function($draggableRoomElement) {
         return ['start', 'goal'].filter(function(klass) {
-          return $draggable_room_element.hasClass(klass);
+          return $draggableRoomElement.hasClass(klass);
         })[0];
       },
-      _get_drop_handler: function() {
-        var maze_maker;
-        maze_maker = this;
+      _getDropHandler: function() {
+        var amazeMaker;
+        amazeMaker = this;
         return function(e, ui) {
-          var $dragged_item, $drop_target, doors, position, room, special_class;
-          $dragged_item = ui.draggable;
-          $drop_target = $(this);
-          position = maze_maker._get_position($drop_target);
-          special_class = maze_maker._get_marker($dragged_item);
-          if (special_class === 'start') {
-            maze_maker.maze.set_start(position);
-          } else if (special_class === 'goal') {
-            maze_maker.maze.set_goal(position);
+          var $draggedItem, $dropTarget, doors, position, room, specialClass;
+          $draggedItem = ui.draggable;
+          $dropTarget = $(this);
+          position = amazeMaker._getPosition($dropTarget);
+          specialClass = amazeMaker._getMarker($draggedItem);
+          if (specialClass === 'start') {
+            amazeMaker.maze.setStart(position);
+          } else if (specialClass === 'goal') {
+            amazeMaker.maze.setGoal(position);
           } else {
-            doors = maze_maker._get_doors($dragged_item);
+            doors = amazeMaker._getDoors($draggedItem);
             room = new Room(doors);
-            maze_maker.maze.set_room(position, room);
+            amazeMaker.maze.setRoom(position, room);
           }
-          return maze_maker._render_maze();
+          return amazeMaker._renderMaze();
         };
       },
-      _render_room_types: function() {
+      _renderRoomTypes: function() {
         var perm, room, rooms, _i, _len, _ref;
         rooms = $('<div class="rooms"></div>');
         _ref = this._permute(['north', 'east', 'south', 'west']);
@@ -90,85 +90,84 @@
         pom.setAttribute('download', filename);
         return pom.click();
       },
-      _load_string: function(string) {
-        this.maze = Maze.from_string(string);
-        this._clear_maze();
-        this._build_maze();
-        return this._render_maze();
+      _loadString: function(string) {
+        this.maze = Maze.fromString(string);
+        this._clearMaze();
+        this._buildMaze();
+        return this._renderMaze();
       },
-      _load_upload: function(file) {
+      _loadUpload: function(file) {
         var reader;
         reader = new FileReader;
         reader.onload = (function(_this) {
           return function(e) {
-            return _this._load_string(reader.result);
+            return _this._loadString(reader.result);
           };
         })(this);
         return reader.readAsText(file);
       },
-      _load_file: function(url) {
+      _loadFile: function(url) {
         var request;
         request = new XMLHttpRequest;
         request.onload = (function(_this) {
           return function() {
-            return _this._load_string(request.responseText);
+            return _this._loadString(request.responseText);
           };
         })(this);
         request.open('get', url, true);
         return request.send();
       },
-      _render_controls: function() {
-        var amaze_maker, controls, download, solver, upload;
-        amaze_maker = this;
+      _renderControls: function() {
+        var controls, download, solver, upload;
         controls = $('<div class="controls"></div>');
         download = $('<button>Download</button>');
         download.click((function(_this) {
           return function(e) {
-            return _this._download('map.amaze', _this.maze.to_string());
+            return _this._download('map.amaze', _this.maze.toString());
           };
         })(this));
         controls.append(download);
         upload = $('<input type="file">');
         upload.change((function(_this) {
           return function(e) {
-            return _this._load_upload(e.target.files[0]);
+            return _this._loadUpload(e.target.files[0]);
           };
         })(this));
         controls.append(upload);
         solver = $('<button>Solve</button>');
         solver.click((function(_this) {
           return function(e) {
-            return _this._overlay_solution();
+            return _this._overlaySolution();
           };
         })(this));
         controls.append(solver);
         controls.append('<div class="clear"></div>');
         return this.element.append(controls);
       },
-      _overlay_solution: function() {
-        var current_cell, current_position, direction, path, _results;
-        this.maze.clear_items();
-        path = new Solver(this.maze).solve_breadth_first();
-        current_position = this.maze.start;
+      _overlaySolution: function() {
+        var currentCell, currentPosition, direction, path, _results;
+        this.maze.clearItems();
+        path = new Solver(this.maze).solveBreadthFirst();
+        currentPosition = this.maze.start;
         if (path === null) {
           return alert("No solution");
         } else {
           _results = [];
           while (path.length > 0) {
-            current_cell = this.element.find('td.row' + current_position.y + '.col' + current_position.x);
+            currentCell = this.element.find('td.row' + currentPosition.y + '.col' + currentPosition.x);
             direction = path.shift();
-            if (!current_position.equals(this.maze.start)) {
-              current_cell.addClass('move_' + direction);
+            if (!currentPosition.equals(this.maze.start)) {
+              currentCell.addClass('move_' + direction);
             }
-            _results.push(current_position = current_position.after_move(direction));
+            _results.push(currentPosition = currentPosition.afterMove(direction));
           }
           return _results;
         }
       },
-      _clear_maze: function() {
+      _clearMaze: function() {
         return this.element.find('table').remove();
       },
-      _build_maze: function() {
+      _buildMaze: function() {
         var ci, ri, row, table, _i, _j, _ref, _ref1;
         table = $('<table class="maze"></table>');
         for (ri = _i = _ref = this.maze.height() - 1; _ref <= 0 ? _i <= 0 : _i >= 0; ri = _ref <= 0 ? ++_i : --_i) {
@@ -176,14 +175,14 @@
           for (ci = _j = 0, _ref1 = this.maze.width() - 1; 0 <= _ref1 ? _j <= _ref1 : _j >= _ref1; ci = 0 <= _ref1 ? ++_j : --_j) {
             $('<td></td>').addClass('row' + ri).addClass('col' + ci).droppable({
               hoverClass: 'highlight',
-              drop: this._get_drop_handler(this)
+              drop: this._getDropHandler(this)
             }).appendTo(row);
           }
         }
         return this.element.append(table);
       },
-      _render_maze: function() {
-        var cell, ci, class_string, doors, ri, table, _i, _ref, _results;
+      _renderMaze: function() {
+        var cell, ci, doors, klass, ri, table, _i, _ref, _results;
         table = this.element.find('table');
         _results = [];
         for (ri = _i = 0, _ref = this.maze.height() - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; ri = 0 <= _ref ? ++_i : --_i) {
@@ -191,15 +190,15 @@
             var _j, _ref1, _results1;
             _results1 = [];
             for (ci = _j = 0, _ref1 = this.maze.width() - 1; 0 <= _ref1 ? _j <= _ref1 : _j >= _ref1; ci = 0 <= _ref1 ? ++_j : --_j) {
-              doors = this.maze.get_room({
+              doors = this.maze.getRoom({
                 x: ci,
                 y: ri
               }).doors;
-              class_string = 'row' + ri + ' col' + ci + ' ' + doors.map(function(d) {
+              klass = 'row' + ri + ' col' + ci + ' ' + doors.map(function(d) {
                 return d.toLowerCase();
               }).join(' ');
               cell = table.find('td.row' + ri + '.col' + ci);
-              cell.attr('class', class_string);
+              cell.attr('class', klass);
               if (this.maze.start && this.maze.start.equals({
                 x: ci,
                 y: ri
@@ -220,7 +219,7 @@
         return _results;
       },
       _permute: function(set) {
-        var head, permuted_tail, result, tail;
+        var head, permutedTail, result, tail;
         if (set.length === 0) {
           return [];
         } else if (set.length === 1) {
@@ -228,8 +227,8 @@
         } else {
           head = set[set.length - 1];
           tail = set.slice(0, set.length - 1);
-          permuted_tail = this._permute(tail);
-          result = permuted_tail.concat(permuted_tail.map(function(perm) {
+          permutedTail = this._permute(tail);
+          result = permutedTail.concat(permutedTail.map(function(perm) {
             return perm.concat(head);
           }));
           return result.sort(function(perm1, perm2) {

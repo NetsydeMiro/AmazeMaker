@@ -1,10 +1,10 @@
 (function() {
-  define(['Directions', 'Position', 'Room', 'Maze', 'Solver'], function(Directions, Position, Room, Maze, Solver) {
+  define(['Direction', 'Position', 'Room', 'Maze', 'Solver'], function(Direction, Position, Room, Maze, Solver) {
     var AmazeMaker;
     return AmazeMaker = (function() {
       function AmazeMaker() {}
 
-      AmazeMaker.Directions = Directions;
+      AmazeMaker.Direction = Direction;
 
       AmazeMaker.Position = Position;
 

@@ -1,29 +1,25 @@
 (function() {
-  define(['AmazeMaker'], function(AmazeMaker) {
+  define(['Direction', 'Position', 'Room', 'Maze'], function(Direction, Position, Room, Maze) {
     return describe('Maze', function() {
-      var Directions, Maze, Position, Room, amaze;
-      Maze = AmazeMaker.Maze;
-      Position = AmazeMaker.Position;
-      Room = AmazeMaker.Room;
-      Directions = AmazeMaker.Directions;
+      var amaze;
       amaze = null;
       beforeEach(function() {
         var room;
         amaze = new Maze(2, 2);
-        room = new Room(Directions.East);
+        room = new Room(Direction.EAST);
         room.add('NW');
-        amaze.set_room(new Position(0, 1), room);
-        room = new Room([Directions.West, Directions.South]);
+        amaze.setRoom(new Position(0, 1), room);
+        room = new Room([Direction.WEST, Direction.SOUTH]);
         room.add('NE');
-        amaze.set_room(new Position(1, 1), room);
-        room = new Room([Directions.North, Directions.West]);
+        amaze.setRoom(new Position(1, 1), room);
+        room = new Room([Direction.NORTH, Direction.WEST]);
         room.add('SW');
-        amaze.set_room(new Position(1, 0), room);
-        room = new Room(Directions.East);
+        amaze.setRoom(new Position(1, 0), room);
+        room = new Room(Direction.EAST);
         room.add('SE');
-        return amaze.set_room(new Position(0, 0), room);
+        return amaze.setRoom(new Position(0, 0), room);
       });
-      describe("Constructor", function() {
+      describe("constructor", function() {
         it('sets maze to correct height and width', function() {
           var newMaze;
           newMaze = new Maze(3, 4);
@@ -39,30 +35,30 @@
               var _j, _results1;
               _results1 = [];
               for (y = _j = 0; _j <= 2; y = ++_j) {
-                expect(newMaze.rooms[x][y].is_empty()).toBe(true);
+                expect(newMaze.rooms[x][y].isEmpty()).toBe(true);
                 if (y !== 2) {
-                  expect(newMaze.rooms[x][y].doors).toContain(Directions.North);
+                  expect(newMaze.rooms[x][y].doors).toContain(Direction.NORTH);
                 }
                 if (y === 2) {
-                  expect(newMaze.rooms[x][y].doors).not.toContain(Directions.North);
+                  expect(newMaze.rooms[x][y].doors).not.toContain(Direction.NORTH);
                 }
                 if (x !== 2) {
-                  expect(newMaze.rooms[x][y].doors).toContain(Directions.East);
+                  expect(newMaze.rooms[x][y].doors).toContain(Direction.EAST);
                 }
                 if (x === 2) {
-                  expect(newMaze.rooms[x][y].doors).not.toContain(Directions.East);
+                  expect(newMaze.rooms[x][y].doors).not.toContain(Direction.EAST);
                 }
                 if (y !== 0) {
-                  expect(newMaze.rooms[x][y].doors).toContain(Directions.South);
+                  expect(newMaze.rooms[x][y].doors).toContain(Direction.SOUTH);
                 }
                 if (y === 0) {
-                  expect(newMaze.rooms[x][y].doors).not.toContain(Directions.South);
+                  expect(newMaze.rooms[x][y].doors).not.toContain(Direction.SOUTH);
                 }
                 if (x !== 0) {
-                  expect(newMaze.rooms[x][y].doors).toContain(Directions.West);
+                  expect(newMaze.rooms[x][y].doors).toContain(Direction.WEST);
                 }
                 if (x === 0) {
-                  _results1.push(expect(newMaze.rooms[x][y].doors).not.toContain(Directions.West));
+                  _results1.push(expect(newMaze.rooms[x][y].doors).not.toContain(Direction.WEST));
                 } else {
                   _results1.push(void 0);
                 }
@@ -79,269 +75,267 @@
         beforeEach(function() {
           var room;
           amaze2 = new Maze(2, 2);
-          room = new Room(Directions.East);
+          room = new Room(Direction.EAST);
           room.add('NW');
-          amaze2.set_room(new Position(0, 1), room);
-          room = new Room([Directions.West, Directions.South]);
+          amaze2.setRoom(new Position(0, 1), room);
+          room = new Room([Direction.WEST, Direction.SOUTH]);
           room.add('NE');
-          amaze2.set_room(new Position(1, 1), room);
-          room = new Room([Directions.North, Directions.West]);
+          amaze2.setRoom(new Position(1, 1), room);
+          room = new Room([Direction.NORTH, Direction.WEST]);
           room.add('SW');
-          amaze2.set_room(new Position(1, 0), room);
-          room = new Room(Directions.East);
+          amaze2.setRoom(new Position(1, 0), room);
+          room = new Room(Direction.EAST);
           room.add('SE');
-          return amaze2.set_room(new Position(0, 0), room);
+          return amaze2.setRoom(new Position(0, 0), room);
         });
         it('returns true if mazes have equal rooms, starts, and targets', function() {
           return expect(amaze.equals(amaze2)).toBe(true);
         });
         it('returns false if mazes have different rooms', function() {
-          amaze2.get_room({
+          amaze2.getRoom({
             x: 0,
             y: 0
           }).add('another item');
           return expect(amaze.equals(amaze2)).toBe(false);
         });
         it('returns false if mazes have different starts', function() {
-          amaze2.set_start({
+          amaze2.setStart({
             x: 0,
             y: 1
           });
           return expect(amaze.equals(amaze2)).toBe(false);
         });
         it('returns false if mazes have different goals', function() {
-          amaze2.set_goal({
+          amaze2.setGoal({
             x: 0,
             y: 1
           });
           return expect(amaze.equals(amaze2)).toBe(false);
         });
         it('returns true if mazes have same goals', function() {
-          amaze.set_goal({
+          amaze.setGoal({
             x: 0,
             y: 1
           });
-          amaze2.set_goal({
+          amaze2.setGoal({
             x: 0,
             y: 1
           });
           return expect(amaze.equals(amaze2)).toBe(true);
         });
         return it('returns true if mazes have same starts', function() {
-          amaze.set_goal({
+          amaze.setGoal({
             x: 0,
             y: 1
           });
-          amaze2.set_goal({
+          amaze2.setGoal({
             x: 0,
             y: 1
           });
           return expect(amaze.equals(amaze2)).toBe(true);
         });
       });
-      describe('#set_room()', function() {
-        var all_doors, closedroom, openroom;
-        all_doors = null;
+      describe('#setRoom()', function() {
+        var closedroom, openroom;
         openroom = null;
         closedroom = null;
         beforeEach(function() {
-          all_doors = [Directions.North, Directions.East, Directions.South, Directions.West];
-          openroom = new Room(all_doors);
+          openroom = new Room(Direction.ALL);
           closedroom = new Room([]);
           return amaze = new Maze(5, 5);
         });
         it("seals room's northern/western doors if placed on boundary", function() {
-          amaze.set_room({
+          amaze.setRoom({
             x: 0,
             y: 4
           }, openroom);
           expect(openroom.doors.length).toEqual(2);
-          expect(openroom.doors).toContain(Directions.East);
-          return expect(openroom.doors).toContain(Directions.South);
+          expect(openroom.doors).toContain(Direction.EAST);
+          return expect(openroom.doors).toContain(Direction.SOUTH);
         });
         it("seals room's southern/eastern doors if placed on boundary", function() {
-          amaze.set_room({
+          amaze.setRoom({
             x: 4,
             y: 0
           }, openroom);
           expect(openroom.doors.length).toEqual(2);
-          expect(openroom.doors).toContain(Directions.North);
-          return expect(openroom.doors).toContain(Directions.West);
+          expect(openroom.doors).toContain(Direction.NORTH);
+          return expect(openroom.doors).toContain(Direction.WEST);
         });
         it("does nothing if placed in middle", function() {
-          amaze.set_room({
+          amaze.setRoom({
             x: 3,
             y: 3
           }, openroom);
           expect(openroom.doors.length).toEqual(4);
-          expect(openroom.doors).toContain(Directions.North);
-          expect(openroom.doors).toContain(Directions.West);
-          expect(openroom.doors).toContain(Directions.East);
-          return expect(openroom.doors).toContain(Directions.South);
+          expect(openroom.doors).toContain(Direction.NORTH);
+          expect(openroom.doors).toContain(Direction.WEST);
+          expect(openroom.doors).toContain(Direction.EAST);
+          return expect(openroom.doors).toContain(Direction.SOUTH);
         });
         it("seals adjacent rooms' doors if wall placed adjacent", function() {
           var center, east, north, south, west;
           center = new Position(2, 2);
-          amaze.set_room(center, closedroom);
-          west = amaze.get_room(center.after_move(Directions.West));
+          amaze.setRoom(center, closedroom);
+          west = amaze.getRoom(center.afterMove(Direction.WEST));
           expect(west.doors.length).toEqual(3);
-          expect(west.doors).not.toContain(Directions.East);
-          east = amaze.get_room(center.after_move(Directions.East));
+          expect(west.doors).not.toContain(Direction.EAST);
+          east = amaze.getRoom(center.afterMove(Direction.EAST));
           expect(east.doors.length).toEqual(3);
-          expect(east.doors).not.toContain(Directions.West);
-          north = amaze.get_room(center.after_move(Directions.North));
+          expect(east.doors).not.toContain(Direction.WEST);
+          north = amaze.getRoom(center.afterMove(Direction.NORTH));
           expect(north.doors.length).toEqual(3);
-          expect(north.doors).not.toContain(Directions.South);
-          south = amaze.get_room(center.after_move(Directions.South));
+          expect(north.doors).not.toContain(Direction.SOUTH);
+          south = amaze.getRoom(center.afterMove(Direction.SOUTH));
           expect(south.doors.length).toEqual(3);
-          return expect(south.doors).not.toContain(Directions.North);
+          return expect(south.doors).not.toContain(Direction.NORTH);
         });
         return it("opens adjacent room's walls if door placed adjacent", function() {
           var center, east, north, south, west, x, y, _i, _j;
           center = new Position(3, 3);
           for (x = _i = 0; _i <= 4; x = ++_i) {
             for (y = _j = 0; _j <= 4; y = ++_j) {
-              amaze.get_room({
+              amaze.getRoom({
                 x: x,
                 y: y
               }).doors = [];
             }
           }
-          amaze.set_room(center, openroom);
-          west = amaze.get_room(center.after_move(Directions.West));
-          expect(west.doors).toEqual([Directions.East]);
-          east = amaze.get_room(center.after_move(Directions.East));
-          expect(east.doors).toEqual([Directions.West]);
-          north = amaze.get_room(center.after_move(Directions.North));
-          expect(north.doors).toEqual([Directions.South]);
-          south = amaze.get_room(center.after_move(Directions.South));
-          return expect(south.doors).toEqual([Directions.North]);
+          amaze.setRoom(center, openroom);
+          west = amaze.getRoom(center.afterMove(Direction.WEST));
+          expect(west.doors).toEqual([Direction.EAST]);
+          east = amaze.getRoom(center.afterMove(Direction.EAST));
+          expect(east.doors).toEqual([Direction.WEST]);
+          north = amaze.getRoom(center.afterMove(Direction.NORTH));
+          expect(north.doors).toEqual([Direction.SOUTH]);
+          south = amaze.getRoom(center.afterMove(Direction.SOUTH));
+          return expect(south.doors).toEqual([Direction.NORTH]);
         });
       });
-      describe('#within_bounds()', function() {
+      describe('#withinBounds()', function() {
         var position;
         position = new Position(0, 0);
         it("returns true when position in bounds", function() {
           position.x = 0;
           position.y = 0;
-          expect(amaze.within_bounds(position)).toBe(true);
+          expect(amaze.withinBounds(position)).toBe(true);
           position.x = 0;
           position.y = 1;
-          expect(amaze.within_bounds(position)).toBe(true);
+          expect(amaze.withinBounds(position)).toBe(true);
           position.x = 1;
           position.y = 0;
-          expect(amaze.within_bounds(position)).toBe(true);
+          expect(amaze.withinBounds(position)).toBe(true);
           position.x = 1;
           position.y = 1;
-          return expect(amaze.within_bounds(position)).toBe(true);
+          return expect(amaze.withinBounds(position)).toBe(true);
         });
         return it("returns false when past a wall", function() {
           position.x = -1;
           position.y = 0;
-          expect(amaze.within_bounds(position)).toBe(false);
+          expect(amaze.withinBounds(position)).toBe(false);
           position.x = 2;
           position.y = 0;
-          expect(amaze.within_bounds(position)).toBe(false);
+          expect(amaze.withinBounds(position)).toBe(false);
           position.x = 0;
           position.y = -1;
-          expect(amaze.within_bounds(position)).toBe(false);
+          expect(amaze.withinBounds(position)).toBe(false);
           position.x = 0;
           position.y = 2;
-          return expect(amaze.within_bounds(position)).toBe(false);
+          return expect(amaze.withinBounds(position)).toBe(false);
         });
       });
-      describe('#at_bounds()', function() {
+      describe('#atBounds()', function() {
         var position;
         position = new Position(0, 0);
         it("returns bounds when position at bounds", function() {
           var bounds;
           position.x = 0;
           position.y = 0;
-          bounds = amaze.at_bounds(position);
+          bounds = amaze.atBounds(position);
           expect(bounds.length).toBe(2);
-          expect(bounds).toContain(Directions.South);
-          return expect(bounds).toContain(Directions.West);
+          expect(bounds).toContain(Direction.SOUTH);
+          return expect(bounds).toContain(Direction.WEST);
         });
         it("returns bounds when position at north eastern bounds", function() {
           var bounds;
           position.x = 1;
           position.y = 1;
-          bounds = amaze.at_bounds(position);
+          bounds = amaze.atBounds(position);
           expect(bounds.length).toBe(2);
-          expect(bounds).toContain(Directions.North);
-          return expect(bounds).toContain(Directions.East);
+          expect(bounds).toContain(Direction.NORTH);
+          return expect(bounds).toContain(Direction.EAST);
         });
         return it("returns empty when not at bounds", function() {
           var bounds;
           amaze = new Maze(3, 3);
           position.x = 1;
           position.y = 1;
-          bounds = amaze.at_bounds(position);
+          bounds = amaze.atBounds(position);
           return expect(bounds).toEqual([]);
         });
       });
-      describe('#to_string()', function() {
+      describe('#toString()', function() {
         it("returns correct string representation", function() {
-          amaze.set_start({
+          amaze.setStart({
             x: 0,
             y: 1
           });
-          amaze.set_goal({
+          amaze.setGoal({
             x: 0,
             y: 0
           });
-          return expect(amaze.to_string()).toEqual("-----\n|s  |\n--  -\n|g  |\n-----");
+          return expect(amaze.toString()).toEqual("-----\n|s  |\n--  -\n|g  |\n-----");
         });
         return it("works when start and goal aren't set", function() {
-          return expect(amaze.to_string()).toEqual("-----\n|   |\n--  -\n|   |\n-----");
+          return expect(amaze.toString()).toEqual("-----\n|   |\n--  -\n|   |\n-----");
         });
       });
-      describe('::from_string()', function() {
+      describe('::fromString()', function() {
         return it("correctly initializes maze", function() {
           var deserialized, serialized;
-          amaze.set_start({
+          amaze.setStart({
             x: 0,
             y: 1
           });
-          amaze.set_goal({
+          amaze.setGoal({
             x: 0,
             y: 0
           });
-          amaze.get_room({
+          amaze.getRoom({
             x: 0,
             y: 0
           }).items = [];
-          amaze.get_room({
+          amaze.getRoom({
             x: 0,
             y: 1
           }).items = [];
-          amaze.get_room({
+          amaze.getRoom({
             x: 1,
             y: 0
           }).items = [];
-          amaze.get_room({
+          amaze.getRoom({
             x: 1,
             y: 1
           }).items = [];
           serialized = "-----\n|s  |\n--  -\n|g  |\n-----";
-          deserialized = Maze.from_string(serialized);
+          deserialized = Maze.fromString(serialized);
           return expect(deserialized.equals(amaze)).toBe(true);
         });
       });
-      return describe('#clear_items()', function() {
+      return describe('#clearItems()', function() {
         return it('clears maze of items', function() {
           var x, y, _i, _results;
-          amaze.clear_items();
+          amaze.clearItems();
           _results = [];
           for (x = _i = 0; _i <= 1; x = ++_i) {
             _results.push((function() {
               var _j, _results1;
               _results1 = [];
               for (y = _j = 0; _j <= 1; y = ++_j) {
-                _results1.push(expect(amaze.get_room({
+                _results1.push(expect(amaze.getRoom({
                   x: x,
                   y: y
-                }).is_empty()).toBe(true));
+                }).isEmpty()).toBe(true));
               }
               return _results1;
             })());

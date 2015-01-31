@@ -14,7 +14,7 @@
         this.items = [];
       }
 
-      Room.prototype.is_empty = function() {
+      Room.prototype.isEmpty = function() {
         return this.items.length === 0;
       };
 
@@ -22,7 +22,7 @@
         return this.items.push(item);
       };
 
-      Room.prototype.clear_items = function() {
+      Room.prototype.clearItems = function() {
         return this.items = [];
       };
 
@@ -30,7 +30,7 @@
         return this.items.indexOf(item) !== -1;
       };
 
-      Room.prototype.seal_door = function(direction) {
+      Room.prototype.sealDoor = function(direction) {
         var index;
         if ((index = this.doors.indexOf(direction)) !== -1) {
           this.doors.splice(index, 1);
@@ -38,19 +38,19 @@
         return this;
       };
 
-      Room.prototype.open_wall = function(direction) {
+      Room.prototype.openWall = function(direction) {
         if (this.doors.indexOf(direction) === -1) {
           this.doors.push(direction);
         }
         return this;
       };
 
-      Room.prototype.has_door = function(direction) {
+      Room.prototype.hasDoor = function(direction) {
         return this.doors.indexOf(direction) !== -1;
       };
 
-      Room.prototype.has_wall = function(direction) {
-        return !this.has_door(direction);
+      Room.prototype.hasWall = function(direction) {
+        return !this.hasDoor(direction);
       };
 
       Room.prototype.equals = function(room) {
