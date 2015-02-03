@@ -28,7 +28,6 @@ module.exports = (grunt) ->
     jasmine: 
       # we keep _SpecRunner.html around when devving to help debug
       dev: 
-        #src: 'src/AmazeMaker.js'
         src: 'src/**.*.js'
         options:
           specs: 'spec/*.js'
@@ -39,13 +38,13 @@ module.exports = (grunt) ->
               paths:
                 'jquery': '../lib/jquery-2.1.3'
                 'jquery-ui': '../lib/jquery-ui-1.11.2-core-interactions-effects'
+                'mock-ajax': '../lib/mock-ajax'
               shim: 
                 'jquery-ui':
                   exports: '$'
                   deps: ['jquery']
           keepRunner: true
       prod: 
-        #src: 'src/AmazeMaker.js'
         src: 'src/**.*.js'
         options:
           specs: 'spec/*.js'
@@ -56,6 +55,7 @@ module.exports = (grunt) ->
               paths:
                 'jquery': '../lib/jquery-2.1.3'
                 'jquery-ui': '../lib/jquery-ui-1.11.2-core-interactions-effects'
+                'mock-ajax': '../lib/mock-ajax'
               shim: 
                 'jquery-ui':
                   exports: '$'

@@ -127,8 +127,20 @@ define ['Direction', 'Position', 'Room'], (Direction, Position, Room) ->
 
       result += '-'
 
+    # just a quick sanity check... not an exhaustive validation
+    @validMazeString: (serialized) -> 
+      lines = serialized.split "\n"
+      # must be at least 3 lines (height or at least 1 room)
+      lines.length > 2 and 
+      # first line must contain only dasheas (northern wall)
+      not lines[0].match('[^-]')
+
+
     # builds maze from ascii art representation
     @fromString: (serialized) -> 
+
+      if not @validMazeString serialized
+        throw "Invalid Maze String: #{serialized}"
 
       lines = serialized.split("\n")
 

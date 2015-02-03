@@ -237,6 +237,26 @@ define ['Direction', 'Position', 'Room', 'Maze'], (Direction, Position, Room, Ma
         -----
         """
 
+    describe '::validMazeString()', -> 
+
+      it 'must be at least 3 lines high (maze height of 1 room)', -> 
+
+        invalid = """
+        ---
+        | |
+        """
+        expect(Maze.validMazeString invalid).toBe false
+
+      it 'must be have all dashes in first line (northern wall)', -> 
+
+        invalid = """
+        - -
+        | |
+        ---
+        """
+        expect(Maze.validMazeString invalid).toBe false
+
+
     describe '::fromString()', -> 
 
       it "correctly initializes maze", -> 
@@ -260,6 +280,12 @@ define ['Direction', 'Position', 'Room', 'Maze'], (Direction, Position, Room, Ma
         deserialized = Maze.fromString serialized
 
         expect(deserialized.equals amaze).toBe true
+
+      it "throws error if incorrect maze representation supplied", -> 
+
+        clearlyNotMaze = "Blork Bleep"
+        bomb = -> Maze.fromString(clearlyNotMaze)
+        expect(bomb).toThrow "Invalid Maze String: #{clearlyNotMaze}"
 
     describe '#clearItems()', -> 
 
