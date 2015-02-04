@@ -3,7 +3,6 @@ define ['Direction', 'Room'], (Direction, Room) ->
   describe 'Room', -> 
 
     describe 'constructor', -> 
-
       it 'defaults to no doors', ->
         room = new Room
         expect(room.doors).toEqual []
@@ -16,8 +15,20 @@ define ['Direction', 'Room'], (Direction, Room) ->
         room = new Room Direction.NORTH
         expect(room.doors).toEqual [Direction.NORTH]
 
-    describe '#contains()', -> 
+    describe '#walls()', -> 
+      it 'returns no walls when room has only doors', -> 
+        room = new Room Direction.ALL
+        expect(room.walls()).toEqual []
 
+      it 'returns all walls when room has only walls', -> 
+        room = new Room []
+        expect(room.walls()).toEqual Direction.ALL
+
+      it 'returns correct walls when room has some doors', -> 
+        room = new Room [Direction.NORTH, Direction.EAST]
+        expect(room.walls().sort()).toEqual [Direction.SOUTH, Direction.WEST]
+
+    describe '#contains()', -> 
       it 'returns true if room contains item', -> 
         room = new Room
         room.add 'treasure'
@@ -29,7 +40,6 @@ define ['Direction', 'Room'], (Direction, Room) ->
         expect(room.contains 'monster').toBe false
 
     describe '#isEmpty()', -> 
-
       it 'returns true if room empty', -> 
         room = new Room
         expect(room.isEmpty()).toBe true
@@ -40,7 +50,6 @@ define ['Direction', 'Room'], (Direction, Room) ->
         expect(room.isEmpty()).toBe false
 
     describe '#hasDoor()', -> 
-
       it 'is true if room has door at specified diretion', -> 
         room = new Room(Direction.SOUTH)
         expect(room.hasDoor Direction.SOUTH).toBe true
@@ -50,7 +59,6 @@ define ['Direction', 'Room'], (Direction, Room) ->
         expect(room.hasDoor Direction.NORTH).toBe false
 
     describe '#hasWall()', -> 
-
       it 'is true if room has wall at specified direction', -> 
         room = new Room(Direction.SOUTH)
         expect(room.hasWall Direction.NORTH).toBe true
@@ -60,7 +68,6 @@ define ['Direction', 'Room'], (Direction, Room) ->
         expect(room.hasWall Direction.SOUTH).toBe false
 
     describe '#sealDoor()', -> 
-
       it 'removes door if present', -> 
         room = new Room(Direction.NORTH)
         expect(room.doors.length).toEqual 1
@@ -80,7 +87,6 @@ define ['Direction', 'Room'], (Direction, Room) ->
         expect(room.sealDoor Direction.SOUTH).toBe room
 
     describe '#openWall()', -> 
-
       it 'inserts door if not present', -> 
         room = new Room([])
         expect(room.doors.length).toEqual 0
@@ -100,7 +106,6 @@ define ['Direction', 'Room'], (Direction, Room) ->
         expect(room.openWall Direction.SOUTH).toBe room
 
     describe '#equals()', -> 
-
       it 'returns true if rooms have same doors and items', -> 
         room1 = new Room [Direction.NORTH, Direction.SOUTH]
         room2 = new Room [Direction.SOUTH, Direction.NORTH]
@@ -135,7 +140,6 @@ define ['Direction', 'Room'], (Direction, Room) ->
         expect(room1.equals room2).toBe false
 
     describe '#clearItems()', -> 
-
       it 'clears all the rooms items', -> 
         room1 = new Room 
         room1.add 'junk'

@@ -1,5 +1,6 @@
-define -> 
+define ['Direction'], (Direction) -> 
 
+  #TODO: make doors private, add doors accessor function
   class Room 
     constructor: (doors=[]) -> 
       if doors.constructor is Array
@@ -9,6 +10,9 @@ define ->
         @doors = [doors]
 
       @items = []
+
+    walls: -> 
+      Direction.ALL.slice().filter @hasWall, this
 
     isEmpty: -> 
       @items.length is 0
