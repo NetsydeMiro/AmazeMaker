@@ -1,4 +1,4 @@
-define ['Maze', 'Serializer', 'jquery-ui', 'renderer', 'mock-ajax'], (Maze, Serializer) -> 
+define ['Position', 'Maze', 'Serializer', 'jquery-ui', 'renderer', 'mock-ajax'], (Position, Maze, Serializer) -> 
 
   target = null
   serializedMaze = null
@@ -111,6 +111,23 @@ define ['Maze', 'Serializer', 'jquery-ui', 'renderer', 'mock-ajax'], (Maze, Seri
             pos = {x:x, y:y}
             unless maze.goal.equals pos
               expect(target.find(tableCellSelector maze, pos).hasClass 'goal').toBe false
+
+      it 'renders items as classes', -> 
+        posItem1 = new Position 0, 0
+        posItem2 = new Position 1, 1
+        maze.getRoom(posItem1).add 'item1'
+        maze.getRoom(posItem2).add 'item2'
+        target.renderer maze: maze
+        expect(target.find(tableCellSelector maze, posItem1).hasClass 'item1').toBe true
+        expect(target.find(tableCellSelector maze, posItem2).hasClass 'item2').toBe true
+
+        for y in [0...maze.height()]
+          for x in [0...maze.width()]
+            pos = {x:x, y:y}
+            unless posItem1.equals pos
+              expect(target.find(tableCellSelector maze, pos).hasClass 'item1').toBe false
+            unless posItem2.equals pos
+              expect(target.find(tableCellSelector maze, pos).hasClass 'item2').toBe false
 
     describe '#maze()', -> 
       maze2 = null

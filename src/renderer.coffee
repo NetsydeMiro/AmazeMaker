@@ -34,7 +34,8 @@ define ['Maze', 'Serializer', 'jquery-ui'], (Maze, Serializer) ->
       for y in [@_maze.height()-1..0]
         for x in [0...@_maze.width()]
           # build door classes
-          doorClasses = @_maze.getRoom(x:x,y:y).doors.join(' ')
+          room = @_maze.getRoom x:x, y:y
+          doorClasses = room.doors.join(' ')
           cell = table.find @_tableCellSelector x:x, y:y
           cell.attr 'class',  doorClasses
 
@@ -44,6 +45,10 @@ define ['Maze', 'Serializer', 'jquery-ui'], (Maze, Serializer) ->
           if @_maze.goal and @_maze.goal.equals {x:x,y:y}
             cell.addClass 'goal'
 
+          # set item classes
+          for item in room.items
+            cell.addClass item
+          
     _buildMaze: -> 
       @element.find('table.maze').remove()
       table = $('<table class="maze"></table>').appendTo @element
