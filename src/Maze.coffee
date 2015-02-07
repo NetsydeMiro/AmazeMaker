@@ -5,9 +5,9 @@ define ['Direction', 'Position', 'Room'], (Direction, Position, Room) ->
     constructor: (width, height) -> 
       # initialize empty rooms, within walled labyrinth
       @rooms = new Array(width)
-      for x in [0..width-1]
+      for x in [0...width]
         @rooms[x] = new Array(height)
-        for y in [0..height-1]
+        for y in [0...height]
           doors = []
           doors.push Direction.NORTH unless y is height-1
           doors.push Direction.EAST unless x is width-1
@@ -45,7 +45,7 @@ define ['Direction', 'Position', 'Room'], (Direction, Position, Room) ->
     withinBounds: (position) -> 
       0 <= position.x < @width() and 0 <= position.y < @height()
 
-    # returns boundaries on with position resides (if any)
+    # returns boundaries on which position resides (if any)
     atBounds: (position) -> 
       bounds = []
       if position.y is 0
@@ -60,7 +60,7 @@ define ['Direction', 'Position', 'Room'], (Direction, Position, Room) ->
       bounds
 
     equals: (maze) -> 
-      # maze must have same dimensions, and either equal or unset starts and goals
+      # maze must have same dimensions, and either equal or null starts and goals
       if @height() isnt maze.height() or
       @width() isnt maze.width() or
       @start isnt maze.start and (not @start or not maze.start or not @start.equals maze.start) or
@@ -71,14 +71,14 @@ define ['Direction', 'Position', 'Room'], (Direction, Position, Room) ->
       else
 
         # rooms must all be equal
-        for x in [0..@width()-1]
-          for y in [0..@height()-1]
+        for x in [0...@width()]
+          for y in [0...@height()]
             if not @rooms[x][y].equals maze.rooms[x][y]
               return false
 
         return true
 
     clearItems: -> 
-      for x in [0..@width()-1]
-        for y in [0..@height()-1]
+      for x in [0...@width()]
+        for y in [0...@height()]
           @rooms[x][y].clearItems()

@@ -21,7 +21,7 @@ define ['Direction', 'Position', 'Maze'], (Direction, Position, Maze) ->
             else
               result += '  '
 
-        # far right is always labyrinth wall
+        # far right is always labyrinth's eastern wall
         result += "-\n"
 
         # next we draw western walls and markers
@@ -42,13 +42,14 @@ define ['Direction', 'Position', 'Maze'], (Direction, Position, Maze) ->
           else
             result += ' '
 
-        # far right is always labyrinth wall
+        # far right is always labyrinth eastern wall
         result += "|\n"
 
       for x in [0..maze.width()-1]
         #lastly we draw southern boundary of labyrinth
         result += '--'
 
+      # far right is always labyrinth eastern wall
       result += '-'
 
     # just a quick sanity check... not an exhaustive validation
@@ -76,7 +77,7 @@ define ['Direction', 'Position', 'Maze'], (Direction, Position, Maze) ->
       for y in [height-1..0]
         line_no = lines.length - (y + 1) * 2 - 1
 
-        # create north wall
+        # create northern wall
         for x in [0..width-1]
 
           pos = new Position x, y

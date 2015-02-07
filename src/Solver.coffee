@@ -4,6 +4,7 @@ define ['Direction', 'Room', 'Maze'], (Direction, Room, Maze) ->
 
     constructor: (@maze) -> 
 
+    # may find solution faster, but doesn't guarantee shortest path
     solveDepthFirst: -> 
 
       solveHelper = (maze, position, path) -> 
@@ -24,6 +25,7 @@ define ['Direction', 'Room', 'Maze'], (Direction, Room, Maze) ->
 
       solveHelper @maze, @maze.start, []
 
+    # may take longer to find solution, but guarantees optimal path
     solveBreadthFirst: -> 
 
       pathQueue = [{position: @maze.start, path: []}]
