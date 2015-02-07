@@ -1,4 +1,4 @@
-define ['Maze', 'jquery-ui', 'renderer', 'mock-ajax'], (Maze) -> 
+define ['Maze', 'Serializer', 'jquery-ui', 'renderer', 'mock-ajax'], (Maze, Serializer) -> 
 
   target = null
   serializedMaze = null
@@ -13,7 +13,7 @@ define ['Maze', 'jquery-ui', 'renderer', 'mock-ajax'], (Maze) ->
     |g  |
     -----
     """
-    maze = Maze.fromString serializedMaze
+    maze = Serializer.fromString serializedMaze
 
   afterEach -> 
     target.remove()
@@ -116,7 +116,7 @@ define ['Maze', 'jquery-ui', 'renderer', 'mock-ajax'], (Maze) ->
       maze2 = null
 
       beforeEach -> 
-        maze2 = Maze.fromString """
+        maze2 = Serializer.fromString """
         ---
         | |
         ---

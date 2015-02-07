@@ -1,4 +1,4 @@
-define ['Maze', 'jquery-ui'], (Maze) -> 
+define ['Maze', 'Serializer', 'jquery-ui'], (Maze, Serializer) -> 
 
   $.widget 'AmazeMaker.renderer', 
 
@@ -8,10 +8,10 @@ define ['Maze', 'jquery-ui'], (Maze) ->
     _create: -> 
       @_maze = if (typeof @options.maze) is 'string'
         try
-          Maze.fromString @options.maze
+          Serializer.fromString @options.maze
         catch ex
           if ex.indexOf('Invalid Maze String: ') is 0
-            Maze.fromString @_readUrl(@options.maze)
+            Serializer.fromString @_readUrl(@options.maze)
           else
             throw ex
       else
