@@ -65,6 +65,7 @@ module.exports = (grunt) ->
       static: true
       filter: 
         [{type: 'exclude', pattern: '{.git,lib,node_modules}/'},
+        {type: 'include', pattern: '/'},
         {type: 'include', pattern: '*/'},
         {type: 'include', pattern: '*.{html,js,css,amaze}'},
         {type: 'exclude', pattern: '*'}]
@@ -82,3 +83,4 @@ module.exports = (grunt) ->
   grunt.registerTask 'travis', ['default']
 
   grunt.registerTask 'serve', ['livereloadx', 'watch:compile']
+  grunt.registerTask 'dev', ['livereloadx', 'watch']

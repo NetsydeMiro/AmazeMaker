@@ -7,5 +7,28 @@
   </head>
   <body>
     <div id='amaze-maker-easy'></div>
+    <input id='inp' type='file' />
+    <canvas id='cnv'></canvas>
+    <script>
+      $(function(){
+
+
+          $('#inp').change(function(e){
+            var canvas = $('#cnv');
+            var context = canvas[0].getContext('2d');
+            var reader = new FileReader();
+            reader.onload = function(e2){
+                var img = new Image();
+                img.onload = function(){
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    context.drawImage(img,0,0);
+                }
+                img.src = e2.target.result;
+            }
+            reader.readAsDataURL(e.target.files[0]);  
+          });
+      });
+    </script>
   </body>
 </html>

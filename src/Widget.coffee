@@ -1,5 +1,5 @@
-define ['Direction', 'Position', 'Room', 'Maze', 'Solver'], 
-(Direction, Position, Room, Maze, Solver) -> 
+define ['Direction', 'Position', 'Room', 'Maze', 'Serializer', 'Solver'], 
+(Direction, Position, Room, Maze, Serializer, Solver) -> 
 
   $.widget 'netsyde.amazeMaker', 
 
@@ -82,7 +82,7 @@ define ['Direction', 'Position', 'Room', 'Maze', 'Solver'],
       pom.click()
 
     _loadString: (string) -> 
-        @maze = Maze.fromString string
+        @maze = Serializer.fromString string
         @_clearMaze()
         @_buildMaze()
         @_renderMaze()
